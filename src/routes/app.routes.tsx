@@ -45,7 +45,7 @@ export function AppRoutes() {
           borderTopWidth: 0,
           
           height: Platform.OS === 'android' ? 'auto' : 96,
-          paddingBottom: tokens.space['10'],
+          paddingBottom: tokens.space['14'],
           paddingTop: tokens.space['6'],
         },
       }}
