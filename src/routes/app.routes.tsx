@@ -4,9 +4,13 @@ import {
 } from '@react-navigation/bottom-tabs'
 import { gluestackUIConfig } from '../../config/gluestack-ui.config'
 
-import HomeSvg from '@assets/home.svg'
+/* import HomeSvg from '@assets/home.svg' */
 import HistorySvg from '@assets/history.svg'
 import ProfileSvg from '@assets/profile.svg'
+/* import LaptopReportIcon from '@assets/laptop-report-icon.svg' */
+
+import AnalysisIcon from '@assets/analysis-icon.svg'
+
 
 import { Home } from '@screens/Home'
 import { History } from '@screens/History'
@@ -51,7 +55,7 @@ export function AppRoutes() {
         component={Home}
         options={{
           tabBarIcon: ({ color }) => (
-            <HomeSvg fill={color} width={iconSize} height={iconSize} />
+            <AnalysisIcon fill={color} width={50} height={40} />
           ),
         }}
       />
