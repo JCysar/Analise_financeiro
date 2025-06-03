@@ -5,9 +5,14 @@ import {
 import { gluestackUIConfig } from '../../config/gluestack-ui.config'
 
 /* import HomeSvg from '@assets/home.svg' */
-import HistorySvg from '@assets/history.svg'
+
+import MoneySvg from '@assets/bakingmoney.svg'
+
+
 import ProfileSvg from '@assets/profile.svg'
 /* import LaptopReportIcon from '@assets/laptop-report-icon.svg' */
+
+import GoalsSvg from '@assets/goals-svgrepo-com.svg' // novo import
 
 import AnalysisIcon from '@assets/analysis-icon.svg'
 
@@ -64,7 +69,7 @@ export function AppRoutes() {
         component={History}
         options={{
           tabBarIcon: ({ color }) => (
-            <HistorySvg fill={color} width={iconSize} height={iconSize} />
+            <MoneySvg fill={color} width={iconSize} height={iconSize} />
           ),
         }}
       />
@@ -73,17 +78,21 @@ export function AppRoutes() {
         component={Profile}
         options={{
           tabBarIcon: ({ color }) => (
-            <ProfileSvg fill={color} width={iconSize} height={iconSize} />
+            <GoalsSvg fill={color} width={iconSize} height={iconSize} />
           ),
         }}
       />
       <Screen
         name="exercise"
         component={Exercise}
-       options={{
-          tabBarButton: () => null,
-          tabBarItemStyle: { display: 'none' }, // Adicione esta linha
+         options={{
+          tabBarIcon: ({ color }) => (
+            <ProfileSvg fill={color} width={iconSize} height={iconSize} />
+          ),
         }}
+        
+   
+       
       />
     </Navigator>
   )
