@@ -15,6 +15,7 @@ import { ResumoDoMes } from "../components/ResumoDoMes";
 import { UltimosGastos } from "../components/UltimosGastos";
 import { AdicionarGastoForm } from "../components/AdicionarGastoForm"; // Novo componente
 import { ToggleSaldoButton } from "../components/ToggleSaldoButton";
+import { Image } from "react-native";
 
 export function Home() {
   // Despesas cadastradas (simulação de back-end/local)
@@ -63,14 +64,22 @@ export function Home() {
         <Box
           w="100%"
           px="$4"
-          pt="$6"
-          pb="$4"
+          pt="$10"
+          pb="$10"
           bg="$white"
           style={{ position: "relative" }}
-          mt="$8" // <-- Adicione esta linha para descer o header
+          mt="$10"
         >
-          <HStack justifyContent="space-between" alignItems="center">
-            <Box w={10} h={10} bg="$gray300" rounded="$full" />
+          <HStack justifyContent="flex-end" alignItems="center">
+            <Image
+              source={require("../assets/logotko.png")}
+              style={{
+                width: 80,
+                height: 80,
+                resizeMode: "contain",
+                marginRight: "80%", // ajuste esse valor para mover mais ou menos
+              }}
+            />
           </HStack>
           <VStack mt="$4" space="sm">
             <HStack alignItems="center" space="sm">
