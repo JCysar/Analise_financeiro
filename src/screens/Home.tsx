@@ -60,7 +60,15 @@ export function Home() {
         contentContainerStyle={{ paddingBottom: 32 }}
       >
         {/* Header */}
-        <Box w="100%" px="$4" pt="$6" pb="$4" bg="$white" style={{ position: "relative" }}>
+        <Box
+          w="100%"
+          px="$4"
+          pt="$6"
+          pb="$4"
+          bg="$white"
+          style={{ position: "relative" }}
+          mt="$8" // <-- Adicione esta linha para descer o header
+        >
           <HStack justifyContent="space-between" alignItems="center">
             <Box w={10} h={10} bg="$gray300" rounded="$full" />
           </HStack>
