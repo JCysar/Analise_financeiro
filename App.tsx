@@ -1,5 +1,5 @@
 
-import {  StatusBar } from 'react-native';
+import { StatusBar } from 'react-native';
 
 import {
   useFonts,
