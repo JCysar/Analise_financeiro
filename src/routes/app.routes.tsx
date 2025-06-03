@@ -14,7 +14,7 @@ import ProfileSvg from '@assets/profile.svg'
 
 import GoalsSvg from '@assets/goals-svgrepo-com.svg' // novo import
 
-import AnalysisIcon from '@assets/analysis-icon.svg'
+import AnalysisIcon from '@assets/dash.svg'
 
 
 import { Home } from '@screens/Home'

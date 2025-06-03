@@ -14,6 +14,7 @@ import { Dimensions } from "react-native";
 import { ResumoDoMes } from "../components/ResumoDoMes";
 import { UltimosGastos } from "../components/UltimosGastos";
 import { AdicionarGastoForm } from "../components/AdicionarGastoForm"; // Novo componente
+import { ToggleSaldoButton } from "../components/ToggleSaldoButton";
 
 export function Home() {
   // Despesas cadastradas (simulação de back-end/local)
@@ -49,6 +50,8 @@ export function Home() {
   const gastosTotais = despesas.reduce((sum, d) => sum + d.valor, 0);
   const saldo = rendaTotal - gastosTotais;
 
+  const [saldoVisivel, setSaldoVisivel] = useState(true);
+
   return (
     <Center flex={1} bg="$gray100">
       <ScrollView
@@ -57,20 +60,26 @@ export function Home() {
         contentContainerStyle={{ paddingBottom: 32 }}
       >
         {/* Header */}
-        <Box w="100%" px="$4" pt="$6" pb="$4" bg="$white">
+        <Box w="100%" px="$4" pt="$6" pb="$4" bg="$white" style={{ position: "relative" }}>
           <HStack justifyContent="space-between" alignItems="center">
             <Box w={10} h={10} bg="$gray300" rounded="$full" />
-            <Pressable>
-              <Text fontSize="$lg">👁️</Text>
-            </Pressable>
           </HStack>
           <VStack mt="$4" space="sm">
-            <Text fontSize="$2xl" fontWeight="bold" color="$black">
-              Saldo: R$ {saldo.toLocaleString("pt-BR", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
-            </Text>
+            <HStack alignItems="center" space="sm">
+              <Text fontSize="$2xl" fontWeight="bold" color="$black">
+                Saldo:{" "}
+                {saldoVisivel
+                  ? `R$ ${saldo.toLocaleString("pt-BR", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}`
+                  : "••••••"}
+              </Text>
+              <ToggleSaldoButton
+                visivel={saldoVisivel}
+                onToggle={() => setSaldoVisivel((v) => !v)}
+              />
+            </HStack>
             <HStack alignItems="center" space="md">
               <HStack alignItems="center" space="xs">
                 <Text fontSize="$md">💰</Text>
