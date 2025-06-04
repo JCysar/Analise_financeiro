@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Center,
   ScrollView,
@@ -7,6 +7,7 @@ import {
   Text,
   Input,
   Button,
+  InputField, // Adicione esta importação
 } from "@gluestack-ui/themed";
 
 export function Exercise() {
@@ -17,6 +18,11 @@ export function Exercise() {
     email: "vinicius.lourenco@example.com",
     phone: "(11) 99999-1234",
   };
+
+  const [name, setName] = useState(existingUser.name);
+  const [email, setEmail] = useState(existingUser.email);
+  const [phone, setPhone] = useState(existingUser.phone);
+  const [income, setIncome] = useState("");
 
   return (
     <Center flex={1} bg="$gray100">
@@ -39,51 +45,66 @@ export function Exercise() {
             <Text fontSize="$sm" color="$gray700" mb="$1">
               Nome
             </Text>
-            <Input
-              defaultValue={existingUser.name}
-              placeholder="Digite seu nome"
-            />
+            <Input>
+              <InputField
+                value={name}
+                onChangeText={setName}
+                placeholder="Digite seu nome"
+              />
+            </Input>
 
-            {/** Espaçamento entre campos **/}
             <Box h="$3" />
 
             {/** E-mail **/}
             <Text fontSize="$sm" color="$gray700" mb="$1">
               E-mail
             </Text>
-            <Input
-              defaultValue={existingUser.email}
-              placeholder="Digite seu e-mail"
-              keyboardType="email-address"
-            />
-
-            <Box h="$3" />
+            <Input>
+              <InputField
+                value={email}
+                onChangeText={setEmail}
+                placeholder="Digite seu e-mail"
+                keyboardType="email-address"
+              />
+            </Input>
 
             {/** Telefone **/}
             <Text fontSize="$sm" color="$gray700" mb="$1">
               Telefone
             </Text>
-            <Input
-              defaultValue={existingUser.phone}
-              placeholder="(xx) xxxxx-xxxx"
-              keyboardType="phone-pad"
-            />
-
-            <Box h="$3" />
+            <Input>
+              <InputField
+                value={phone}
+                onChangeText={setPhone}
+                placeholder="(xx) xxxxx-xxxx"
+                keyboardType="phone-pad"
+              />
+            </Input>
 
             {/** Renda **/}
             <Text fontSize="$sm" color="$gray700" mb="$1">
               Renda
             </Text>
-            <Input
-              placeholder="Digite sua renda"
-              keyboardType="numeric"
-            />
+            <Input>
+              <InputField
+                value={income}
+                onChangeText={setIncome}
+                placeholder="Digite sua renda"
+                keyboardType="numeric"
+              />
+            </Input>
 
             <Box h="$4" />
 
-            {/** Botão para salvar alterações **/}
-            <Button bg="$orange500">
+            {/*** Ações ***/}
+            <Button
+              onPress={() => {
+                /** Aqui você enviaria os dados atualizados para serem salvos */
+              }}
+              bg="$orange500" // altere para a cor laranja desejada
+              borderRadius="$md"
+              p="$3"
+            >
               <Text color="$white" fontWeight="bold">
                 Salvar alterações
               </Text>

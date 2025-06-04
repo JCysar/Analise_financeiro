@@ -8,6 +8,27 @@ interface CategoriaData {
   color: string;
 }
 
+// Exemplo de componente ResumoMes
+interface Gasto {
+  valor: number | string;
+}
+
+interface ResumoMesProps {
+  income: number | string;
+  gastos: Gasto[];
+}
+
+export function ResumoMes({ income, gastos }: ResumoMesProps) {
+  // Calcule o saldo
+  const saldo = Number(income) - gastos.reduce((acc, gasto) => acc + Number(gasto.valor), 0);
+
+  return (
+    <Box>
+      <Text>Saldo do mês: R$ {saldo.toFixed(2)}</Text>
+    </Box>
+  );
+}
+
 export function ResumoDoMes() {
   const categoriasData: CategoriaData[] = [
     { name: "Mercado",    percentage: 40, color: "#C2410C" },
