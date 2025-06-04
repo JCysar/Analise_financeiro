@@ -18,9 +18,9 @@ import AnalysisIcon from '@assets/dash.svg'
 
 
 import { Home } from '@screens/Home'
-import { History } from '@screens/History'
-import { Profile } from '@screens/Profile'
-import { Exercise } from '@screens/Exercise'
+import { History } from '@screens/gastos'
+import { Profile } from '@screens/metas'
+import { Exercise } from '@screens/perfil'
 import { Platform } from 'react-native'
 
 type AppRoutes = {

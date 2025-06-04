@@ -21,7 +21,7 @@ export function Exercise() {
   return (
     <Center flex={1} bg="$gray100">
       <ScrollView w="100%">
-        <VStack space="$6" p="$4">
+        <VStack space="lg" p="$4">
           {/*** Cabeçalho “Perfil” ***/}
           <Text fontSize="$2xl" fontWeight="bold" color="$gray900" mb="$2">
             Meu Perfil
