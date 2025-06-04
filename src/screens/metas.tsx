@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Center,
   ScrollView,
@@ -9,16 +9,44 @@ import {
   Input,
   InputField,
   Button,
-  Image, // Adicione esta linha se for usar o componente Image
+  Image,
 } from "@gluestack-ui/themed";
+import { Alert } from "react-native"; // Adicione esta linha
+
+type Meta = {
+  nome: string;
+  valor: number;
+  prazo: string;
+  criadoEm: string;
+  valorAtual: number;
+};
 
 export function Profile() {
+  const [metas, setMetas] = useState<Meta[]>([]);
+  const [nome, setNome] = useState("");
+  const [valor, setValor] = useState("");
+  const [prazo, setPrazo] = useState("");
+
+  const adicionarMeta = () => {
+    if (!nome || !valor || !prazo) return;
+    const novaMeta: Meta = {
+      nome,
+      valor: Number(valor),
+      prazo,
+      criadoEm: new Date().toLocaleDateString(),
+      valorAtual: 0,
+    };
+    setMetas([novaMeta, ...metas]);
+    setNome("");
+    setValor("");
+    setPrazo("");
+    Alert.alert("Sucesso", "Meta adicionada com sucesso!"); // Alerta de sucesso
+  };
+
   return (
     <Center flex={1} bg="$gray100">
       <ScrollView w="100%">
-        {/* Espaço para a logo */}
         <Center mt="$8" mb="$4">
-          {/* Substitua o source pelo caminho da sua logo */}
           <Image
             source={require("@assets/logotko.png")}
             alt="Logo"
@@ -28,96 +56,83 @@ export function Profile() {
           />
         </Center>
         <VStack space="md" p="$4" mt="$2">
-          {/*** Card de Meta 1 ***/}
-          <Box
-            borderWidth={1}
-            borderColor="$blue500"
-            borderRadius="$md"
-            bg="$white"
-            p="$4"
-          >
-            <Text fontSize="$md" fontWeight="bold" color="$gray900">
-              Meta - 30.05.2026
-            </Text>
-            <Text fontSize="$sm" color="$gray700" mb="$2">
-              Viagem para Europa
-            </Text>
+          {/* Metas cadastradas */}
+          {metas.map((meta, idx) => {
+            const progresso = meta.valorAtual / meta.valor;
+            return (
+              <Box
+                key={idx}
+                borderWidth={1}
+                borderColor="$blue500"
+                borderRadius="$md"
+                bg="$white"
+                p="$4"
+                mb="$2"
+              >
+                <Text fontSize="$md" fontWeight="bold" color="$gray900">
+                  {meta.nome}
+                </Text>
+                <Text fontSize="$sm" color="$gray700" mb="$1">
+                  Prazo: {meta.prazo}
+                </Text>
+                <Text fontSize="$xs" color="$gray600" mb="$2">
+                  Criado em: {meta.criadoEm}
+                </Text>
+                {/* Barra de progresso */}
+                <Box
+                  bg="$gray300"
+                  h={4}
+                  borderRadius="$full"
+                  overflow="hidden"
+                >
+                  <Box
+                    bg="$green500"
+                    h="100%"
+                    w={`${Math.round(progresso * 100)}%`}
+                  />
+                </Box>
+                <HStack justifyContent="space-between" mt="$2">
+                  <Text fontSize="$xs" color="$gray600">
+                    {Math.round(progresso * 100)}% concluído
+                  </Text>
+                  <Text fontSize="$xs" color="$gray600">
+                    R$ {meta.valorAtual} de R$ {meta.valor}
+                  </Text>
+                </HStack>
+              </Box>
+            );
+          })}
 
-            {/** Barra de progresso (30%) **/}
-            <Box
-              bg="$gray300"
-              h={4}
-              borderRadius="$full"
-              overflow="hidden"
-            >
-              <Box bg="$green500" h="100%" w="30%" />
-            </Box>
-
-            <HStack justifyContent="space-between" mt="$2">
-              <Text fontSize="$xs" color="$gray600">
-                30% concluído
-              </Text>
-              <Text fontSize="$xs" color="$gray600">
-                R$ 5.000 de R$ 20.000
-              </Text>
-            </HStack>
-          </Box>
-
-          {/*** Card de Meta 2 ***/}
-          <Box
-            borderWidth={1}
-            borderColor="$blue500"
-            borderRadius="$md"
-            bg="$white"
-            p="$4"
-          >
-            <Text fontSize="$md" fontWeight="bold" color="$gray900">
-              Meta - 15.03.2026
-            </Text>
-            <Text fontSize="$sm" color="$gray700" mb="$2">
-              Carro novo
-            </Text>
-
-            {/** Barra de progresso (também 30%) **/}
-            <Box
-              bg="$gray300"
-              h={4}
-              borderRadius="$full"
-              overflow="hidden"
-            >
-              <Box bg="$green500" h="100%" w="30%" />
-            </Box>
-
-            <HStack justifyContent="space-between" mt="$2">
-              <Text fontSize="$xs" color="$gray600">
-                30% concluído
-              </Text>
-              <Text fontSize="$xs" color="$gray600">
-                R$ 5.000 de R$ 20.000
-              </Text>
-            </HStack>
-          </Box>
-
-          {/*** Formulário de “Adicionar meta” ***/}
+          {/* Formulário de “Adicionar meta” */}
           <Box bg="$white" borderRadius="$lg" p="$4">
             <Text fontSize="$lg" fontWeight="bold" color="$gray900" mb="$2">
               Adicionar meta
             </Text>
-              <Input>
-                <InputField placeholder="Nome:" />
-              </Input>
-              <Input>
-                <InputField placeholder="Valor necessário:" keyboardType="numeric" />
-              </Input>
-              <Input>
-                <InputField placeholder="Prazo:" />
-              </Input>
-              <Input>
-                <InputField placeholder="Prazo:" />
-              </Input>
-              <Button mt="$3" bg="$orange500">
-                <Text color="$white">Adicionar meta</Text>
-              </Button>
+            <Input mb="$2">
+              <InputField
+                placeholder="Nome:"
+                value={nome}
+                onChangeText={setNome}
+              />
+            </Input>
+            <Input mb="$2">
+              <InputField
+                placeholder="Valor necessário:"
+                keyboardType="numeric"
+                value={valor}
+                onChangeText={setValor}
+              />
+            </Input>
+            <Input mb="$2">
+              <InputField
+                placeholder="Prazo:"
+                value={prazo}
+                onChangeText={setPrazo}
+              />
+            </Input>
+            <Button mt="$3" bg="$orange500" onPress={adicionarMeta}>
+              <Text color="$white">Adicionar meta</Text>
+            </Button>
           </Box>
         </VStack>
       </ScrollView>
