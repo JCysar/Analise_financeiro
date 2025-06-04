@@ -16,10 +16,12 @@ import { UltimosGastos } from "../components/UltimosGastos";
 import { AdicionarGastoForm } from "../components/AdicionarGastoForm"; // Novo componente
 import { ToggleSaldoButton } from "../components/ToggleSaldoButton";
 import { Image } from "react-native";
+import { useDespesas } from "../context/ExpensesContext"; // Importando o contexto de despesas
 
 export function Home() {
+  const { despesas, adicionarDespesa } = useDespesas();
   // Despesas cadastradas (simulação de back-end/local)
-  const [despesas, setDespesas] = useState([
+  const [despesasState, setDespesas] = useState([
     {
       id: 1,
       nome: "Mercado",
@@ -48,7 +50,7 @@ export function Home() {
 
   // Simulação de dados de renda e gastos totais
   const rendaTotal = 8000;
-  const gastosTotais = despesas.reduce((sum, d) => sum + d.valor, 0);
+  const gastosTotais = despesasState.reduce((sum, d) => sum + d.valor, 0);
   const saldo = rendaTotal - gastosTotais;
 
   const [saldoVisivel, setSaldoVisivel] = useState(true);
@@ -158,7 +160,7 @@ export function Home() {
                     ? "🎉"
                     : "🚗",
               };
-              setDespesas([novaDespesa, ...despesas]);
+              adicionarDespesa(novaDespesa);
             }}
           />
         </Box>
