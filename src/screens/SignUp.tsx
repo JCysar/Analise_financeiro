@@ -53,7 +53,7 @@ export function SignUp() {
 
     return (
 
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1, backgroundColor: '#FFF' }} showsVerticalScrollIndicator={false}>
 
 
             <VStack flex={1}>
@@ -73,14 +73,14 @@ export function SignUp() {
 
                 />
 
-                <VStack flex={1} px="$10" pb="$16">
+                <VStack flex={1} px="$10" pb="$16" bg="#FFF">
 
 
                     <Center my="$24">
 
                         <Logo />
 
-                        <Text color="$gray100" fontSize="$sm">
+                        <Text color="#888" fontSize="$sm">
 
                             treine sua mente e seu corpo
 
@@ -90,19 +90,19 @@ export function SignUp() {
                     </Center>
 
                     <Center gap="$2" flex={1}>
-                        <Heading color="$gray100" > Crie sua conta  </Heading>
+                        <Heading color="#222" > Crie sua conta  </Heading>
 
-                        <Input placeholder="Nome" />
+                        <Input placeholder="Nome" style={{ backgroundColor: '#FFF', borderColor: '#DDD' }} placeholderTextColor="#888" />
 
 
 
-                        <Input placeholder="Email" keyboardType="email-address" autoCapitalize="none" />
+                        <Input placeholder="Email" keyboardType="email-address" autoCapitalize="none" style={{ backgroundColor: '#FFF', borderColor: '#DDD' }} placeholderTextColor="#888" />
 
-                        <Input placeholder="Senha" secureTextEntry autoCapitalize="none" />
+                        <Input placeholder="Senha" secureTextEntry autoCapitalize="none" style={{ backgroundColor: '#FFF', borderColor: '#DDD' }} placeholderTextColor="#888" />
 
                         {/* colocar o "isLoading" abaixo  para ficar carregando quando user fazer a requisicao ao banco */}
 
-                        <Button title="Criar e Acessar" mt="$2" />
+                        <Button title="Criar e Acessar" mt="$2" style={{ backgroundColor: '#FF9100', shadowColor: '#FF9100', shadowOpacity: 0.2, shadowRadius: 8, shadowOffset: { width: 0, height: 4 } }} variant="solid" />
 
                     </Center>
 
@@ -111,7 +111,7 @@ export function SignUp() {
 
 
 
-                    <Button title="Voltar para login" variant="outline" mt="$12" onPress={handelGoback}/>
+                    <Button title="Voltar para login" variant="outline" mt="$12" onPress={handelGoback} style={{ borderColor: '#FF9100' }}/>
 
 
 
