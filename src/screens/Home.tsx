@@ -16,42 +16,20 @@ import { UltimosGastos } from "../components/UltimosGastos";
 import { AdicionarGastoForm } from "../components/AdicionarGastoForm"; // Novo componente
 import { ToggleSaldoButton } from "../components/ToggleSaldoButton";
 import { Image } from "react-native";
-import { useDespesas } from "../context/ExpensesContext"; // Importando o contexto de despesas
+import { useDespesas } from "../context/ExpensesContext"; // já está importado
 
 export function Home() {
-  const { despesas, adicionarDespesa } = useDespesas();
-  // Despesas cadastradas (simulação de back-end/local)
-  const [despesasState, setDespesas] = useState([
-    {
-      id: 1,
-      nome: "Mercado",
-      valor: 100,
-      data: "22/05/2025",
-      icone: "🛒",
-    },
-    {
-      id: 2,
-      nome: "Transporte",
-      valor: 70,
-      data: "20/05/2025",
-      icone: "🚗",
-    },
-    {
-      id: 3,
-      nome: "Transporte",
-      valor: 40,
-      data: "22/05/2025",
-      icone: "🚗",
-    },
-  ]);
+  const { despesas, adicionarDespesa, renda } = useDespesas();
+
+  // Remova o estado local de despesas
+  // const [despesasState, setDespesas] = useState([...]);
 
   // Lista de categorias fixas
   const categorias = ["Mercado", "Lazer", "Transporte"];
 
-  // Simulação de dados de renda e gastos totais
-  const rendaTotal = 8000;
-  const gastosTotais = despesasState.reduce((sum, d) => sum + d.valor, 0);
-  const saldo = rendaTotal - gastosTotais;
+  // Calcule os totais usando o contexto
+  const gastosTotais = despesas.reduce((sum, d) => sum + d.valor, 0);
+  const saldo = renda - gastosTotais;
 
   const [saldoVisivel, setSaldoVisivel] = useState(true);
 
@@ -103,7 +81,7 @@ export function Home() {
               <HStack alignItems="center" space="xs">
                 <Text fontSize="$md">💰</Text>
                 <Text fontSize="$sm" color="$gray600">
-                  Renda: R$ {rendaTotal.toLocaleString("pt-BR")}
+                  Renda: R$ {renda.toLocaleString("pt-BR")}
                 </Text>
               </HStack>
               <HStack alignItems="center" space="xs">
@@ -159,8 +137,9 @@ export function Home() {
                     : categoria.toLowerCase() === "lazer"
                     ? "🎉"
                     : "🚗",
+                descricao,
               };
-              adicionarDespesa(novaDespesa);
+              adicionarDespesa(novaDespesa); // Use o contexto!
             }}
           />
         </Box>

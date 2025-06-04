@@ -11,19 +11,22 @@ interface Despesa {
 interface DespesasContextType {
   despesas: Despesa[];
   adicionarDespesa: (despesa: Despesa) => void;
+  renda: number;
+  setRenda: (valor: number) => void;
 }
 
 const DespesasContext = createContext<DespesasContextType | undefined>(undefined);
 
 export function DespesasProvider({ children }: { children: React.ReactNode }) {
   const [despesas, setDespesas] = useState<Despesa[]>([]);
+  const [renda, setRenda] = useState<number>(0);
 
   function adicionarDespesa(despesa: Despesa) {
     setDespesas((prev) => [despesa, ...prev]);
   }
 
   return (
-    <DespesasContext.Provider value={{ despesas, adicionarDespesa }}>
+    <DespesasContext.Provider value={{ despesas, adicionarDespesa, renda, setRenda }}>
       {children}
     </DespesasContext.Provider>
   );

@@ -9,6 +9,7 @@ import {
   Button,
   InputField, // Adicione esta importação
 } from "@gluestack-ui/themed";
+import { useDespesas } from "../context/ExpensesContext";
 
 export function Exercise() {
   // Aqui, de forma estática, estamos “simulando” os dados já existentes do usuário.
@@ -23,6 +24,8 @@ export function Exercise() {
   const [email, setEmail] = useState(existingUser.email);
   const [phone, setPhone] = useState(existingUser.phone);
   const [income, setIncome] = useState("");
+
+  const { setRenda } = useDespesas();
 
   return (
     <Center flex={1} bg="$gray100">
@@ -99,7 +102,8 @@ export function Exercise() {
             {/*** Ações ***/}
             <Button
               onPress={() => {
-                /** Aqui você enviaria os dados atualizados para serem salvos */
+                setRenda(Number(income) || 0);
+                // Aqui você pode salvar outros dados do usuário se desejar
               }}
               bg="$orange500" // altere para a cor laranja desejada
               borderRadius="$md"
