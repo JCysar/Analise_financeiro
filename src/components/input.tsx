@@ -9,31 +9,23 @@ export function Input({ ...rest }: Props) {
 
     return (
         <GluestackInput
-
-
-            bg="$gray700"
+            bg="#FFF"
             h="$14"
             px="$4"
-            borderWidth="$0"
-            borderRadius="$md"
-            $focus ={{
+            borderWidth={1}
+            borderColor="#DDD"
+            borderRadius={0}
+            overflow="hidden"
+            $focus={{
                 borderWidth: 1,
-                borderColor: "$green500",
+                borderColor: "#FF9100",
             }}
-            
-            >
-
-
-
+        >
             <InputField  
-
-            color ="$white"
-            fontFamily="$body"
-            placeholderTextColor="$gray300"
-
-            
-            {...rest} />
-
+                color="#222"
+                fontFamily="$body"
+                placeholderTextColor="#888"
+                {...rest} />
         </GluestackInput>
     )
 

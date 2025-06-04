@@ -56,71 +56,50 @@ export function Signin() {
 
     return (
 
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1, backgroundColor: '#FFF' }} showsVerticalScrollIndicator={false}>
 
 
         <VStack flex={1} >
 
-            <Image
+            {/* <Image
                 w="$full"
                 h={624}
                 source={backgrtoundImg}
                 defaultSource={backgrtoundImg}
                 alt="Pesssoas treinando"
                 position="absolute"
+            /> */}
 
-
-
-
-
-
-            />
-
-            <VStack flex={1} px="$10" pb="$16">
+            <VStack flex={1} px="$10" pb="$16" bg="#FFF">
 
 
                 <Center my="$24">
 
                     <Logo />
 
-                    <Text color="$gray100" fontSize="$sm">
-
+                    <Text color="#888" fontSize="$sm">
                         treine sua mente e seu corpo
-
-
                     </Text>
 
                 </Center>
 
                 <Center gap="$2">
-                    <Heading color="$gray100" >
+                    <Heading color="#222" >
                         Acesse sua conta
                     </Heading>
 
-                    <Input placeholder="Email" keyboardType="email-address" autoCapitalize="none" />
-                    <Input placeholder="Senha" secureTextEntry autoCapitalize="none" />
+                    <Input placeholder="E-mail" keyboardType="email-address" autoCapitalize="none" style={{ backgroundColor: '#FFF', borderColor: '#DDD' }} placeholderTextColor="#888" />
+                    <Input placeholder="Senha" secureTextEntry autoCapitalize="none" style={{ backgroundColor: '#FFF', borderColor: '#DDD', }} placeholderTextColor="#888" />
 
                     {/* colocar o "isLoading" abaixo  para ficar carregando quando user fazer a requisicao ao banco */}
 
-                    <Button title="Acessar" />
+                    <Button title="Entrar" style={{ backgroundColor: '#FF9100', shadowColor: '#FF9100', shadowOpacity: 0.2, shadowRadius: 8, shadowOffset: { width: 0, height: 4 } }} variant="solid" />
 
-                    </Center>
+                </Center>
 
-
-                    
-
-                    <Center flex={1} justifyContent="flex-end" mt="$4">
-
-                        <Text color="$gray100" fontSize="$sm" mb ="$3" fontFamily="body">Ainda nao tem acesso? </Text>
-
-
-                        <Button title="Criar conta" variant="outline" onPress={handleNewAccount} />
-
-                       
-
-
-                  
-
+                <Center flex={1} justifyContent="flex-end" mt="$4">
+                    <Text color="#888" fontSize="$sm" mb ="$3" fontFamily="body">Ainda não possui uma conta? <Text style={{ color: '#FF9100', textDecorationLine: 'underline' }}>Conecte-se</Text></Text>
+                    <Button title="Criar conta" variant="outline" onPress={handleNewAccount} style={{ borderColor: '#FF9100' }} />
                 </Center>
 
 
