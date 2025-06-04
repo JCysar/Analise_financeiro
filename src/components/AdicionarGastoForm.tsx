@@ -10,6 +10,9 @@ import {
   Box,
 } from "@gluestack-ui/themed";
 
+// Interface que define as propriedades que o componente deve receber
+// categorias: array de strings com as categorias disponíveis
+// onSalvar: função callback que será chamada quando um gasto for salvo
 interface AdicionarGastoFormProps {
   categorias: string[];
   onSalvar: (gasto: {
@@ -20,27 +23,34 @@ interface AdicionarGastoFormProps {
   }) => void;
 }
 
+// Componente principal do formulário de adição de gastos
 export function AdicionarGastoForm({
   categorias,
   onSalvar,
 }: AdicionarGastoFormProps) {
+  // Estados para controlar os valores dos campos do formulário
   const [valor, setValor] = useState("");
   const [categoria, setCategoria] = useState("");
   const [data, setData] = useState("");
   const [descricao, setDescricao] = useState("");
 
+  // Função que lida com o salvamento dos dados
+  // Valida se todos os campos estão preenchidos antes de salvar
   const handleSalvar = () => {
     if (!valor || !categoria || !data || !descricao) {
       alert("Preencha todos os campos antes de salvar.");
       return;
     }
+    // Chama a função onSalvar passada via props com os dados do formulário
     onSalvar({ valor, categoria, data, descricao });
+    // Limpa os campos após salvar
     setValor("");
     setCategoria("");
     setData("");
     setDescricao("");
   };
 
+  // Função para limpar todos os campos do formulário
   const handleCancelar = () => {
     setValor("");
     setCategoria("");
@@ -48,9 +58,10 @@ export function AdicionarGastoForm({
     setDescricao("");
   };
 
+  // Renderização do formulário
   return (
     <VStack space="sm">
-      {/* --- Campo de Valor --- */}
+      {/* Campo para inserir o valor do gasto */}
       <Text fontSize="$sm" color="$gray700">
         Valor:
       </Text>
@@ -64,7 +75,7 @@ export function AdicionarGastoForm({
         />
       </Input>
 
-      {/* --- Campo de Categoria (com Picker nativo) --- */}
+      {/* Campo de seleção de categoria usando Picker nativo */}
       <Text fontSize="$sm" color="$gray700">
         Categoria:
       </Text>
@@ -89,7 +100,7 @@ export function AdicionarGastoForm({
         </Picker>
       </Box>
 
-      {/* --- Campo de Data --- */}
+      {/* Campo para inserir a data do gasto */}
       <Text fontSize="$sm" color="$gray700">
         Data:
       </Text>
@@ -102,7 +113,7 @@ export function AdicionarGastoForm({
         />
       </Input>
 
-      {/* --- Campo de Descrição --- */}
+      {/* Campo para inserir a descrição do gasto */}
       <Text fontSize="$sm" color="$gray700">
         Descrição:
       </Text>
@@ -115,8 +126,9 @@ export function AdicionarGastoForm({
         />
       </Input>
 
-      {/* --- Botões Salvar / Cancelar --- */}
+      {/* Botões de ação do formulário */}
       <HStack space="sm" mt="$4">
+        {/* Botão Salvar - Cor laranja com efeito de pressionar */}
         <Button
           flex={1}
           bg="$orange500"
@@ -127,6 +139,8 @@ export function AdicionarGastoForm({
             Salvar
           </Text>
         </Button>
+
+        {/* Botão Cancelar - Cor cinza com efeito de pressionar */}
         <Button
           flex={1}
           bg="$gray400"
