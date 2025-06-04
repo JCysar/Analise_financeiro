@@ -3,6 +3,7 @@ import { VStack, Image, Center, Text, Heading, ScrollView } from "@gluestack-ui/
 /* o typescript nao tava entendendo o ".png" entao tive que criar um arquivo types para isso */
 
 import backgrtoundImg from "@assets/background.png";
+import logotkoImg from "@assets/logotko.png";
 
 /* como a logo tava em svg tivemos que baixar umas dependecias o metro.config.js */
 
@@ -18,11 +19,6 @@ import { useNavigation } from "@react-navigation/native";
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes";
 
 
-
-
-
-
-import Logo from "@assets/logo.svg";
 
 
 
@@ -75,7 +71,11 @@ export function Signin() {
 
                 <Center my="$24">
 
-                    <Logo />
+                    <Image
+                        source={logotkoImg}
+                        alt="Logo TKO"
+                        style={{ width: 120, height: 120, marginBottom: 16 }}
+                    />
 
                     <Text color="#888" fontSize="$sm">
                         treine sua mente e seu corpo

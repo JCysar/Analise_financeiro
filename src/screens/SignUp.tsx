@@ -21,7 +21,7 @@ import { useNavigation } from "@react-navigation/native";
 
 
 
-import Logo from "@assets/logo.svg";
+import Logo from "@assets/logotko.png";
 
 
 
@@ -78,11 +78,11 @@ export function SignUp() {
 
                     <Center my="$24">
 
-                        <Logo />
+                        <Image source={Logo} alt="Logo" />
 
                         <Text color="#888" fontSize="$sm">
 
-                            treine sua mente e seu corpo
+                          
 
 
                         </Text>
