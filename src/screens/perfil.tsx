@@ -69,6 +69,17 @@ export function Exercise() {
               keyboardType="phone-pad"
             />
 
+            <Box h="$3" />
+
+            {/** Renda **/}
+            <Text fontSize="$sm" color="$gray700" mb="$1">
+              Renda
+            </Text>
+            <Input
+              placeholder="Digite sua renda"
+              keyboardType="numeric"
+            />
+
             <Box h="$4" />
 
             {/** Botão para salvar alterações **/}
