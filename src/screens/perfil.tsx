@@ -10,6 +10,7 @@ import {
   InputField, // Adicione esta importação
 } from "@gluestack-ui/themed";
 import { useDespesas } from "../context/ExpensesContext";
+import { Alert } from "react-native"; // Adicione esta linha
 
 export function Exercise() {
   // Aqui, de forma estática, estamos “simulando” os dados já existentes do usuário.
@@ -103,7 +104,8 @@ export function Exercise() {
             <Button
               onPress={() => {
                 setRenda(Number(income) || 0);
-                // Aqui você pode salvar outros dados do usuário se desejar
+              
+                Alert.alert("Sucesso", "Dados atualizados com sucesso!");
               }}
               bg="$orange500" // altere para a cor laranja desejada
               borderRadius="$md"

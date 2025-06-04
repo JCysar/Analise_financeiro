@@ -17,6 +17,7 @@ import { AdicionarGastoForm } from "../components/AdicionarGastoForm"; // Novo c
 import { ToggleSaldoButton } from "../components/ToggleSaldoButton";
 import { Image } from "react-native";
 import { useDespesas } from "../context/ExpensesContext"; // já está importado
+import { Alert } from "react-native";
 
 export function Home() {
   const { despesas, adicionarDespesa, renda } = useDespesas();
@@ -28,8 +29,8 @@ export function Home() {
   const categorias = ["Mercado", "Lazer", "Transporte"];
 
   // Calcule os totais usando o contexto
-  const gastosTotais = despesas.reduce((sum, d) => sum + d.valor, 0);
-  const saldo = renda - gastosTotais;
+  const gastosTotais = despesas.reduce((sum, d) => sum + (d.valor || 0), 0);
+  const saldo = (renda || 0) - gastosTotais;
 
   const [saldoVisivel, setSaldoVisivel] = useState(true);
 
@@ -140,6 +141,7 @@ export function Home() {
                 descricao,
               };
               adicionarDespesa(novaDespesa); // Use o contexto!
+              Alert.alert("Sucesso", "Gasto adicionado com sucesso!");
             }}
           />
         </Box>
