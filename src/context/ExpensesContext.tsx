@@ -6,6 +6,7 @@ interface Despesa {
   valor: number;
   data: string;
   icone: string;
+  descricao: string;
 }
 
 interface DespesasContextType {

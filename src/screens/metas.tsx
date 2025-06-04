@@ -11,7 +11,8 @@ import {
   Button,
   Image,
 } from "@gluestack-ui/themed";
-import { Alert } from "react-native"; // Adicione esta linha
+import { Alert } from "react-native";
+import { useDespesas } from "../context/ExpensesContext";
 
 type Meta = {
   nome: string;
@@ -26,6 +27,10 @@ export function Profile() {
   const [nome, setNome] = useState("");
   const [valor, setValor] = useState("");
   const [prazo, setPrazo] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
+  const [valorAdicionar, setValorAdicionar] = useState("");
+  const [metaSelecionada, setMetaSelecionada] = useState<number | null>(null);
+  const { adicionarDespesa, despesas } = useDespesas();
 
   const adicionarMeta = () => {
     if (!nome || !valor || !prazo) return;
@@ -40,11 +45,76 @@ export function Profile() {
     setNome("");
     setValor("");
     setPrazo("");
-    Alert.alert("Sucesso", "Meta adicionada com sucesso!"); // Alerta de sucesso
+    Alert.alert("Sucesso", "Meta adicionada com sucesso!");
+  };
+
+  const abrirModalAdicionarValor = (idx: number) => {
+    setMetaSelecionada(idx);
+    setValorAdicionar("");
+    setModalVisible(true);
+  };
+
+  const adicionarValorNaMeta = () => {
+    if (metaSelecionada === null || !valorAdicionar) return;
+    const valorNum = Number(valorAdicionar);
+    setMetas((prev) =>
+      prev.map((meta, idx) =>
+        idx === metaSelecionada
+          ? { ...meta, valorAtual: meta.valorAtual + valorNum }
+          : meta
+      )
+    );
+    const meta = metas[metaSelecionada];
+    adicionarDespesa({
+      id: Date.now(),
+      nome: meta.nome,
+      valor: valorNum,
+      data: new Date().toLocaleDateString(),
+      icone: "🎯",
+      descricao: `Valor usado na meta: ${meta.nome}`,
+    });
+    setModalVisible(false);
+    setValorAdicionar("");
+    setMetaSelecionada(null);
+    Alert.alert("Sucesso", "Valor adicionado à meta e registrado como gasto!");
   };
 
   return (
     <Center flex={1} bg="$gray100">
+      {modalVisible && (
+        <Box
+          position="absolute"
+          top={0}
+          left={0}
+          right={0}
+          bottom={0}
+          bg="$black"
+          opacity={0.7}
+          zIndex={10}
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Center bg="$white" p="$6" borderRadius="$lg">
+            <Text fontSize="$md" mb="$2">Adicionar valor à meta</Text>
+            <Input mb="$2">
+              <InputField
+                placeholder="Valor a adicionar"
+                keyboardType="numeric"
+                value={valorAdicionar}
+                onChangeText={setValorAdicionar}
+              />
+            </Input>
+            <HStack space="md">
+              <Button bg="$green500" onPress={adicionarValorNaMeta}>
+                <Text color="$white">Adicionar</Text>
+              </Button>
+              <Button bg="$gray500" onPress={() => setModalVisible(false)}>
+                <Text color="$white">Cancelar</Text>
+              </Button>
+            </HStack>
+          </Center>
+        </Box>
+      )}
       <ScrollView w="100%">
         <Center mt="$8" mb="$4">
           <Image
@@ -56,7 +126,6 @@ export function Profile() {
           />
         </Center>
         <VStack space="md" p="$4" mt="$2">
-          {/* Metas cadastradas */}
           {metas.map((meta, idx) => {
             const progresso = meta.valorAtual / meta.valor;
             return (
@@ -78,7 +147,6 @@ export function Profile() {
                 <Text fontSize="$xs" color="$gray600" mb="$2">
                   Criado em: {meta.criadoEm}
                 </Text>
-                {/* Barra de progresso */}
                 <Box
                   bg="$gray300"
                   h={4}
@@ -99,11 +167,17 @@ export function Profile() {
                     R$ {meta.valorAtual} de R$ {meta.valor}
                   </Text>
                 </HStack>
+                <Button
+                  mt="$2"
+                  bg="$orange500"
+                  onPress={() => abrirModalAdicionarValor(idx)}
+                >
+                  <Text color="$white">Adicionar valor</Text>
+                </Button>
               </Box>
             );
           })}
 
-          {/* Formulário de “Adicionar meta” */}
           <Box bg="$white" borderRadius="$lg" p="$4">
             <Text fontSize="$lg" fontWeight="bold" color="$gray900" mb="$2">
               Adicionar meta
