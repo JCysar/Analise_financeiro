@@ -1,12 +1,29 @@
 import React, { useState } from "react";
-import { VStack, Text, Input, InputField, Select, Button, HStack } from "@gluestack-ui/themed";
+import { Picker } from "@react-native-picker/picker";
+import {
+  VStack,
+  Text,
+  Input,
+  InputField,
+  Button,
+  HStack,
+  Box,
+} from "@gluestack-ui/themed";
 
 interface AdicionarGastoFormProps {
   categorias: string[];
-  onSalvar: (gasto: { valor: string; categoria: string; data: string; descricao: string }) => void;
+  onSalvar: (gasto: {
+    valor: string;
+    categoria: string;
+    data: string;
+    descricao: string;
+  }) => void;
 }
 
-export function AdicionarGastoForm({ categorias, onSalvar }: AdicionarGastoFormProps) {
+export function AdicionarGastoForm({
+  categorias,
+  onSalvar,
+}: AdicionarGastoFormProps) {
   const [valor, setValor] = useState("");
   const [categoria, setCategoria] = useState("");
   const [data, setData] = useState("");
@@ -33,6 +50,7 @@ export function AdicionarGastoForm({ categorias, onSalvar }: AdicionarGastoFormP
 
   return (
     <VStack space="sm">
+      {/* --- Campo de Valor --- */}
       <Text fontSize="$sm" color="$gray700">
         Valor:
       </Text>
@@ -46,20 +64,32 @@ export function AdicionarGastoForm({ categorias, onSalvar }: AdicionarGastoFormP
         />
       </Input>
 
+      {/* --- Campo de Categoria (com Picker nativo) --- */}
       <Text fontSize="$sm" color="$gray700">
         Categoria:
       </Text>
-      <Select
-        placeholder="Selecione a categoria"
-        selectedValue={categoria}
-        onValueChange={setCategoria}
+      <Box
+        // envolvemos o Picker num Box para poder estilizar fundo/padding
         bg="$gray100"
+        borderRadius="$sm"
+        overflow="hidden"
       >
-        {categorias.map((cat) => (
-          <Select.Item key={cat} label={cat} value={cat.toLowerCase()} />
-        ))}
-      </Select>
+        <Picker
+          selectedValue={categoria}
+          onValueChange={(itemValue) => setCategoria(itemValue)}
+        >
+          <Picker.Item label="Selecione a categoria" value="" />
+          {categorias.map((cat) => (
+            <Picker.Item
+              key={cat}
+              label={cat}
+              value={cat.toLowerCase()}
+            />
+          ))}
+        </Picker>
+      </Box>
 
+      {/* --- Campo de Data --- */}
       <Text fontSize="$sm" color="$gray700">
         Data:
       </Text>
@@ -72,6 +102,7 @@ export function AdicionarGastoForm({ categorias, onSalvar }: AdicionarGastoFormP
         />
       </Input>
 
+      {/* --- Campo de Descrição --- */}
       <Text fontSize="$sm" color="$gray700">
         Descrição:
       </Text>
@@ -84,6 +115,7 @@ export function AdicionarGastoForm({ categorias, onSalvar }: AdicionarGastoFormP
         />
       </Input>
 
+      {/* --- Botões Salvar / Cancelar --- */}
       <HStack space="sm" mt="$4">
         <Button
           flex={1}
