@@ -8,7 +8,10 @@ import {
   Button,
   HStack,
   Box,
+  Pressable,
 } from "@gluestack-ui/themed";
+import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
+import { Platform } from "react-native";
 
 // Interface que define as propriedades que o componente deve receber
 // categorias: array de strings com as categorias disponíveis
@@ -31,8 +34,8 @@ export function AdicionarGastoForm({
 }: AdicionarGastoFormProps) {
   // Estados para controlar os valores dos campos do formulário
   const [valor, setValor] = useState("");
+  const [valorDisplay, setValorDisplay] = useState("");
   const [categoria, setCategoria] = useState("");
-  const [data, setData] = useState("");
   const [descricao, setDescricao] = useState("");
   // Estado para categorias customizadas
   const [categoriasCustom, setCategoriasCustom] = useState<string[]>([]);
@@ -42,19 +45,78 @@ export function AdicionarGastoForm({
   // Estado para tipo de gasto
   const [tipo, setTipo] = useState<'fixo' | 'variavel' | ''>('');
 
+  // Date picker state
+  const [actualDate, setActualDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [dataDisplay, setDataDisplay] = useState("DD/MM/AAAA"); // For displaying selected date
+
+  // Currency formatting functions
+  const formatCurrency = (rawValue: string) => {
+    if (!rawValue) return "";
+    const numericValue = parseFloat(rawValue.replace(/[^\d]/g, '') / 100).toFixed(2);
+    if (isNaN(parseFloat(numericValue))) return ""; // if input is not a number after cleaning
+    const [integerPart, decimalPart] = numericValue.split('.');
+    const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    return `R$ ${formattedInteger},${decimalPart}`;
+  };
+
+  const parseCurrency = (formattedValue: string) => {
+    if (!formattedValue) return "";
+    return formattedValue.replace(/[^\d,]/g, '').replace(',', '.'); // Keep only digits and comma, then replace comma with dot
+  };
+  
+  const handleValorChange = (text: string) => {
+    const rawValue = text.replace(/[^\d]/g, ''); // Remove non-digits
+    setValor(rawValue); // Store the raw numeric string
+    if (rawValue) {
+      const num = parseFloat(rawValue) / 100;
+      setValorDisplay(`R$ ${num.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`);
+    } else {
+      setValorDisplay('');
+    }
+  };
+
+  // Handle date selection
+  const onDateChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
+    setShowDatePicker(Platform.OS === 'ios'); // Keep open on iOS until dismissed
+    if (event.type === 'dismissed') {
+        setShowDatePicker(false);
+        return;
+    }
+    if (selectedDate) {
+      const currentDate = selectedDate || actualDate;
+      setActualDate(currentDate);
+      const day = currentDate.getDate().toString().padStart(2, '0');
+      const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+      const year = currentDate.getFullYear();
+      setDataDisplay(`${day}/${month}/${year}`);
+    }
+    // For Android, picker is hidden after selection automatically
+    if (Platform.OS !== 'ios') {
+        setShowDatePicker(false);
+    }
+  };
+
+  const showMode = () => {
+    setShowDatePicker(true);
+  };
+  
   // Função que lida com o salvamento dos dados
   // Valida se todos os campos estão preenchidos antes de salvar
   const handleSalvar = () => {
-    if (!valor || !categoria || !data || !descricao || !tipo) {
+    const valorNumerico = parseCurrency(valorDisplay); // Parse the display value for saving
+    if (!valorNumerico || !categoria || dataDisplay === "DD/MM/AAAA" || !descricao || !tipo) {
       alert("Preencha todos os campos antes de salvar.");
       return;
     }
     // Chama a função onSalvar passada via props com os dados do formulário
-    onSalvar({ valor, categoria, data, descricao, tipo });
+    onSalvar({ valor: valorNumerico, categoria, data: dataDisplay, descricao, tipo });
     // Limpa os campos após salvar
     setValor("");
+    setValorDisplay(""); // Clear display value
     setCategoria("");
-    setData("");
+    setDataDisplay("DD/MM/AAAA");
+    setActualDate(new Date());
     setDescricao("");
     setTipo('');
   };
@@ -62,9 +124,12 @@ export function AdicionarGastoForm({
   // Função para limpar todos os campos do formulário
   const handleCancelar = () => {
     setValor("");
+    setValorDisplay(""); // Clear display value
     setCategoria("");
-    setData("");
+    setDataDisplay("DD/MM/AAAA");
+    setActualDate(new Date());
     setDescricao("");
+    setTipo('');
   };
 
   // Função para adicionar nova categoria
@@ -88,8 +153,8 @@ export function AdicionarGastoForm({
         <InputField
           placeholder="R$ 0,00"
           keyboardType="numeric"
-          value={valor}
-          onChangeText={setValor}
+          value={valorDisplay}
+          onChangeText={handleValorChange}
           placeholderTextColor="$gray400"
         />
       </Input>
@@ -163,14 +228,20 @@ export function AdicionarGastoForm({
       <Text fontSize="$sm" color="$gray700">
         Data:
       </Text>
-      <Input bg="$gray100">
-        <InputField
-          placeholder="DD/MM/AAAA"
-          value={data}
-          onChangeText={setData}
-          placeholderTextColor="$gray400"
+      <Pressable onPress={showMode} bg="$gray100" p="$3" borderRadius="$sm">
+        <Text color={dataDisplay === "DD/MM/AAAA" ? "$gray400" : "$black"}>
+          {dataDisplay}
+        </Text>
+      </Pressable>
+      {showDatePicker && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={actualDate}
+          mode={'date'}
+          display="default"
+          onChange={onDateChange}
         />
-      </Input>
+      )}
       {/* Campo para inserir a descrição do gasto */}
       <Text fontSize="$sm" color="$gray700">
         Descrição:
