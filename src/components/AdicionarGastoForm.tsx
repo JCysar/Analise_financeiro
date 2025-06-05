@@ -53,8 +53,12 @@ export function AdicionarGastoForm({
   // Currency formatting functions
   const formatCurrency = (rawValue: string) => {
     if (!rawValue) return "";
-    const numericValue = parseFloat(rawValue.replace(/[^\d]/g, '') / 100).toFixed(2);
-    if (isNaN(parseFloat(numericValue))) return ""; // if input is not a number after cleaning
+    // First, parse the cleaned string to a number, then divide
+    const numericValueInput = parseFloat(rawValue.replace(/[^\d]/g, ''));
+    if (isNaN(numericValueInput)) return ""; // if input is not a number after cleaning
+
+    const numericValue = (numericValueInput / 100).toFixed(2);
+    // numericValue is now a string like "123.45"
     const [integerPart, decimalPart] = numericValue.split('.');
     const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     return `R$ ${formattedInteger},${decimalPart}`;
