@@ -1,7 +1,9 @@
-import { VStack, Center, Text, Heading, ScrollView, Link, LinkText, HStack } from "@gluestack-ui/themed";
+import { VStack, Center, Text, Heading, ScrollView, Link, LinkText, HStack, Box } from "@gluestack-ui/themed";
 import { KeyboardAvoidingView, Platform } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes";
+import { Button } from "@components/Button";
+import { useState } from 'react';
 
 /* o typescript nao tava entendendo o ".png" entao tive que criar um arquivo types para isso */
 
@@ -19,15 +21,61 @@ import Logo from "@assets/logotko.png";
 
 import { Input } from "@components/input";
 
-/* importando o butao */
-
-import { Button } from "@components/Button";
-
 export function SignUp() {
     const navigation = useNavigation<AuthNavigatorRoutesProps>();
 
+    // State for input fields
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    // Optional: state for loading and error handling
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
     function handleGoBackToLogin() {
         navigation.navigate("Signin");
+    }
+
+    // Form submission handler
+    async function handleSignUp() {
+        setIsLoading(true);
+        setError(null);
+
+        // Basic validation
+        if (!name || !email || !password || !confirmPassword) {
+            setError("Por favor, preencha todos os campos.");
+            setIsLoading(false);
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            setError("As senhas não coincidem.");
+            setIsLoading(false);
+            return;
+        }
+
+        // TODO: API call logic will go here
+        console.log("Form Data:", { name, email, password });
+        // Simulating API call
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // Example:
+        // try {
+        //   const response = await api.post('/register', { name, email, password });
+        //   // Handle successful registration (e.g., navigate to login or home)
+        //   console.log("Registration successful:", response.data);
+        //   navigation.navigate("Signin"); // Or directly to home if auto-login
+        // } catch (err) {
+        //   setError("Falha no cadastro. Tente novamente.");
+        //   console.error("Registration error:", err);
+        // } finally {
+        //   setIsLoading(false);
+        // }
+
+        setIsLoading(false); // Remove this if API call handles it
+        // For now, let's keep it simple and log, then navigate back
+        // handleGoBackToLogin(); // Optionally navigate after simulated sign-up
     }
 
     return (
@@ -53,6 +101,13 @@ export function SignUp() {
                         </Text>
                     </Center>
 
+                    {/* Display error message if any */}
+                    {error && (
+                        <Box mb="$4" p="$2" rounded="$sm" bg="$red100">
+                            <Text color="$red700" textAlign="center">{error}</Text>
+                        </Box>
+                    )}
+
                     <VStack space="md">
                         <VStack space="xs">
                             <Text color="$textLight800" fontWeight="$bold">Nome*</Text>
@@ -61,6 +116,8 @@ export function SignUp() {
                                 autoCapitalize="words"
                                 placeholderTextColor="$coolGray400"
                                 rounded="$lg"
+                                value={name}
+                                onChangeText={setName}
                             />
                         </VStack>
 
@@ -72,6 +129,8 @@ export function SignUp() {
                                 autoCapitalize="none"
                                 placeholderTextColor="$coolGray400"
                                 rounded="$lg"
+                                value={email}
+                                onChangeText={setEmail}
                             />
                         </VStack>
 
@@ -83,6 +142,8 @@ export function SignUp() {
                                 autoCapitalize="none"
                                 placeholderTextColor="$coolGray400"
                                 rounded="$lg"
+                                value={password}
+                                onChangeText={setPassword}
                             />
                         </VStack>
 
@@ -94,6 +155,8 @@ export function SignUp() {
                                 autoCapitalize="none"
                                 placeholderTextColor="$coolGray400"
                                 rounded="$lg"
+                                value={confirmPassword}
+                                onChangeText={setConfirmPassword}
                             />
                         </VStack>
                     </VStack>
@@ -109,6 +172,8 @@ export function SignUp() {
                             }
                         }}
                         rounded="$lg"
+                        onPress={handleSignUp}
+                        disabled={isLoading}
                     />
 
                     <Center>
