@@ -1,7 +1,8 @@
-import React from "react";
-import { Center, Text, Box, HStack, VStack, ScrollView } from "@gluestack-ui/themed";
-// Dimensions might not be strictly needed anymore if containerWidth is not used for bar calculations
-// import { Dimensions } from "react-native"; 
+import React, { useState, useMemo } from "react";
+import { Center, Text, Box, HStack, VStack, ScrollView, Pressable, Icon } from "@gluestack-ui/themed";
+import { Platform } from "react-native";
+import { CalendarDays as CalendarDaysIcon } from "lucide-react-native";
+import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import { useDespesas } from "../context/ExpensesContext";
 
 interface CategoriaData {
@@ -45,17 +46,55 @@ const getDynamicColor = (percentage: number): string => {
 export function ResumoDoMes() {
   const { despesas, renda } = useDespesas();
 
+  // State for month/year filtering
+  const [currentFilterDate, setCurrentFilterDate] = useState(new Date());
+  const [showMonthYearPicker, setShowMonthYearPicker] = useState(false);
+
   // Define constants for bar display
   const MAX_BAR_HEIGHT = 120; // Max visual height for a bar
   const MIN_BAR_HEIGHT = 8;   // Min visual height for a non-zero bar
   const EXP_FACTOR = 1.2;     // To make larger values more prominent
 
+  const handleDateChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
+    setShowMonthYearPicker(Platform.OS === 'ios'); // Keep open on iOS until dismissed
+    if (event.type === 'dismissed') {
+        setShowMonthYearPicker(false);
+        return;
+    }
+    if (selectedDate) {
+      setCurrentFilterDate(selectedDate);
+    }
+    if (Platform.OS !== 'ios') {
+        setShowMonthYearPicker(false);
+    }
+  };
+
+  const formattedMonthYear = useMemo(() => {
+    return currentFilterDate.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
+  }, [currentFilterDate]);
+
+  // Filter despesas based on currentFilterDate
+  const filteredDespesas = useMemo(() => {
+    const selectedMonth = currentFilterDate.getMonth(); // 0-indexed
+    const selectedYear = currentFilterDate.getFullYear();
+
+    return despesas.filter(d => {
+      if (!d.data || typeof d.data !== 'string') return false;
+      const parts = d.data.split('/');
+      if (parts.length !== 3) return false;
+      const day = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10) - 1; // Convert to 0-indexed month
+      const year = parseInt(parts[2], 10);
+      return month === selectedMonth && year === selectedYear;
+    });
+  }, [despesas, currentFilterDate]);
+
   const totalPorCategoria: { [key: string]: number } = {};
-  despesas.forEach((d) => {
+  filteredDespesas.forEach((d) => {
     totalPorCategoria[d.nome] = (totalPorCategoria[d.nome] || 0) + d.valor;
   });
 
-  const totalGastos = despesas.reduce((sum, d) => sum + d.valor, 0);
+  const totalGastos = filteredDespesas.reduce((sum, d) => sum + d.valor, 0);
 
   const categoriasData: CategoriaData[] = Object.keys(totalPorCategoria).map((cat) => {
     const categoryValue = totalPorCategoria[cat];
@@ -64,35 +103,52 @@ export function ResumoDoMes() {
       name: cat,
       percentage: categoryPercentage,
       value: categoryValue,
-      color: getDynamicColor(categoryPercentage), // Assign dynamic color here
+      color: getDynamicColor(categoryPercentage),
     };
   });
 
-  // Determine max expense for fallback bar scaling (when renda is 0 or not set)
   const positiveExpenseValues = categoriasData.map(c => c.value).filter(v => v > 0);
   const maxActualExpense = positiveExpenseValues.length > 0 ? Math.max(...positiveExpenseValues) : 1;
 
   return (
     <Center w="100%" mb="$4">
       <Box w="100%" bg="$orange100" p="$4" rounded="$lg">
-        <Text color="$black" fontWeight="bold" mb="$4">
-          Resumo do mês
-        </Text>
+        <HStack justifyContent="space-between" alignItems="center" mb="$4">
+          <Text color="$black" fontWeight="bold">
+            Resumo de {formattedMonthYear}
+          </Text>
+          <Pressable onPress={() => setShowMonthYearPicker(true)} ml="$2">
+            <Icon as={CalendarDaysIcon} size="lg" color="$black" />
+          </Pressable>
+        </HStack>
+
+        {showMonthYearPicker && (
+          <DateTimePicker
+            testID="monthYearPicker"
+            value={currentFilterDate}
+            mode="date" // Standard date picker, user informed to select any day for month/year
+            display="default"
+            onChange={handleDateChange}
+          />
+        )}
+
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           <HStack>
             {categoriasData.length === 0 || totalGastos === 0 ? (
-              <Text color="$gray600">Nenhum gasto registrado.</Text>
+              <Text color="$gray600">Nenhum gasto registrado para {formattedMonthYear}.</Text>
             ) : (
               categoriasData.map((item, index) => {
                 let barHeight = 0;
-                if (item.value > 0 && renda > 0 && item.percentage >= 0) { // ensure percentage is non-negative for Math.pow
-                  const percentageAsDecimal = item.percentage / 100;
-                  // Ensure base for Math.pow is non-negative
-                  const poweredPercentage = Math.pow(Math.max(0, percentageAsDecimal), EXP_FACTOR);
+                // Ensure item.percentage is non-negative for Math.pow
+                const safePercentage = Math.max(0, item.percentage);
+
+                if (item.value > 0 && renda > 0 && safePercentage >= 0) {
+                  const percentageAsDecimal = safePercentage / 100;
+                  const poweredPercentage = Math.pow(percentageAsDecimal, EXP_FACTOR);
                   barHeight = MAX_BAR_HEIGHT * poweredPercentage;
                   barHeight = Math.max(MIN_BAR_HEIGHT, barHeight);
                   barHeight = Math.min(barHeight, MAX_BAR_HEIGHT);
-                } else if (item.value > 0) { // Fallback if income is zero/not set, or percentage is 0
+                } else if (item.value > 0) { 
                   const normalizedValue = item.value / maxActualExpense;
                   const poweredValue = Math.pow(Math.max(0, normalizedValue), EXP_FACTOR);
                   barHeight = MAX_BAR_HEIGHT * poweredValue;
@@ -107,8 +163,8 @@ export function ResumoDoMes() {
                     minWidth={80} 
                     py="$2" 
                     justifyContent="flex-end"
-                    height={MAX_BAR_HEIGHT + 60} // Approx height for labels + max bar
-                    ml={index > 0 ? 8 : 0} // Use numerical margin
+                    height={MAX_BAR_HEIGHT + 70} // Adjusted height for potentially longer month name
+                    ml={index > 0 ? 8 : 0} 
                   >
                     <Text color="$black" fontSize="$xs" numberOfLines={1} textAlign="center">{item.name}</Text>
                     <Text color="$gray700" fontSize="$xs" textAlign="center">
@@ -120,7 +176,7 @@ export function ResumoDoMes() {
                     <Box
                       height={barHeight}
                       width={40}
-                      bg={item.color} // Use item.color which was set during mapping
+                      bg={item.color}
                       rounded="$sm"
                     />
                   </VStack>
