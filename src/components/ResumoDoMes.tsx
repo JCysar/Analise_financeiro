@@ -1,6 +1,7 @@
 import React from "react";
 import { Center, Text, Box, HStack, VStack, ScrollView } from "@gluestack-ui/themed";
-import { Dimensions } from "react-native";
+// Dimensions might not be strictly needed anymore if containerWidth is not used for bar calculations
+// import { Dimensions } from "react-native"; 
 import { useDespesas } from "../context/ExpensesContext";
 
 interface CategoriaData {
@@ -31,38 +32,45 @@ export function ResumoMes({ income, gastos }: ResumoMesProps) {
   );
 }
 
+// Helper function to determine bar color based on percentage of income
+const getDynamicColor = (percentage: number): string => {
+  if (percentage <= 5) return "#FEF3C7"; // Amber 200 (Lightest)
+  if (percentage <= 15) return "#FDBA74"; // Orange 300
+  if (percentage <= 30) return "#FB923C"; // Orange 400
+  if (percentage <= 50) return "#F97316"; // Orange 500
+  if (percentage <= 75) return "#EA580C"; // Orange 600
+  return "#DC2626"; // Red 600 (Most intense for > 75%)
+};
+
 export function ResumoDoMes() {
   const { despesas, renda } = useDespesas();
 
-  // Calcule os totais por categoria dinamicamente
+  // Define constants for bar display
+  const MAX_BAR_HEIGHT = 120; // Max visual height for a bar
+  const MIN_BAR_HEIGHT = 8;   // Min visual height for a non-zero bar
+  const EXP_FACTOR = 1.2;     // To make larger values more prominent
+
   const totalPorCategoria: { [key: string]: number } = {};
   despesas.forEach((d) => {
     totalPorCategoria[d.nome] = (totalPorCategoria[d.nome] || 0) + d.valor;
   });
 
-  // Calcule o total de gastos
   const totalGastos = despesas.reduce((sum, d) => sum + d.valor, 0);
 
-  // Monte os dados para o gráfico
-  const categoriasData: CategoriaData[] = Object.keys(totalPorCategoria).map((cat) => ({
-    name: cat,
-    percentage: renda > 0 ? Math.round((totalPorCategoria[cat] / renda) * 100) : 0,
-    value: totalPorCategoria[cat],
-    color:
-      cat.toLowerCase() === "mercado"
-        ? "#C2410C"
-        : cat.toLowerCase() === "lazer"
-        ? "#EA580C"
-        : "#FB923C",
-  }));
+  const categoriasData: CategoriaData[] = Object.keys(totalPorCategoria).map((cat) => {
+    const categoryValue = totalPorCategoria[cat];
+    const categoryPercentage = renda > 0 ? Math.round((categoryValue / renda) * 100) : 0;
+    return {
+      name: cat,
+      percentage: categoryPercentage,
+      value: categoryValue,
+      color: getDynamicColor(categoryPercentage), // Assign dynamic color here
+    };
+  });
 
-  // Determine max expense for dynamic bar scaling
+  // Determine max expense for fallback bar scaling (when renda is 0 or not set)
   const positiveExpenseValues = categoriasData.map(c => c.value).filter(v => v > 0);
   const maxActualExpense = positiveExpenseValues.length > 0 ? Math.max(...positiveExpenseValues) : 1;
-
-  const MAX_BAR_HEIGHT = 120; // Max visual height for a bar
-  const MIN_BAR_HEIGHT = 8;   // Min visual height for a non-zero bar
-  const EXP_FACTOR = 1.2;     // To make larger values more prominent
 
   return (
     <Center w="100%" mb="$4">
@@ -70,7 +78,6 @@ export function ResumoDoMes() {
         <Text color="$black" fontWeight="bold" mb="$4">
           Resumo do mês
         </Text>
-        {/* Make this section scrollable if there are many categories */}
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           <HStack>
             {categoriasData.length === 0 || totalGastos === 0 ? (
@@ -78,19 +85,21 @@ export function ResumoDoMes() {
             ) : (
               categoriasData.map((item, index) => {
                 let barHeight = 0;
-                if (item.value > 0 && item.percentage > 0) {
+                if (item.value > 0 && renda > 0 && item.percentage >= 0) { // ensure percentage is non-negative for Math.pow
                   const percentageAsDecimal = item.percentage / 100;
-                  const poweredPercentage = Math.pow(percentageAsDecimal, EXP_FACTOR);
+                  // Ensure base for Math.pow is non-negative
+                  const poweredPercentage = Math.pow(Math.max(0, percentageAsDecimal), EXP_FACTOR);
                   barHeight = MAX_BAR_HEIGHT * poweredPercentage;
                   barHeight = Math.max(MIN_BAR_HEIGHT, barHeight);
                   barHeight = Math.min(barHeight, MAX_BAR_HEIGHT);
-                } else if (item.value > 0 && renda <= 0) {
+                } else if (item.value > 0) { // Fallback if income is zero/not set, or percentage is 0
                   const normalizedValue = item.value / maxActualExpense;
-                  const poweredValue = Math.pow(normalizedValue, EXP_FACTOR);
+                  const poweredValue = Math.pow(Math.max(0, normalizedValue), EXP_FACTOR);
                   barHeight = MAX_BAR_HEIGHT * poweredValue;
                   barHeight = Math.max(MIN_BAR_HEIGHT, barHeight);
                   barHeight = Math.min(barHeight, MAX_BAR_HEIGHT);
                 }
+
                 return (
                   <VStack 
                     key={item.name} 
@@ -98,8 +107,8 @@ export function ResumoDoMes() {
                     minWidth={80} 
                     py="$2" 
                     justifyContent="flex-end"
-                    height={MAX_BAR_HEIGHT + 60}
-                    ml={index > 0 ? 8 : 0}
+                    height={MAX_BAR_HEIGHT + 60} // Approx height for labels + max bar
+                    ml={index > 0 ? 8 : 0} // Use numerical margin
                   >
                     <Text color="$black" fontSize="$xs" numberOfLines={1} textAlign="center">{item.name}</Text>
                     <Text color="$gray700" fontSize="$xs" textAlign="center">
@@ -111,7 +120,7 @@ export function ResumoDoMes() {
                     <Box
                       height={barHeight}
                       width={40}
-                      bg={item.color}
+                      bg={item.color} // Use item.color which was set during mapping
                       rounded="$sm"
                     />
                   </VStack>
