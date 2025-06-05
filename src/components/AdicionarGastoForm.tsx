@@ -9,7 +9,6 @@ import {
   HStack,
   Box,
 } from "@gluestack-ui/themed";
-import { KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 
 // Interface que define as propriedades que o componente deve receber
 // categorias: array de strings com as categorias disponíveis
@@ -80,153 +79,135 @@ export function AdicionarGastoForm({
 
   // Renderização do formulário
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={80} // ajuste conforme necessário
-    >
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1, padding: 16 }}
-        keyboardShouldPersistTaps="handled"
+    <VStack space="sm">
+      {/* Campo para inserir o valor do gasto */}
+      <Text fontSize="$sm" color="$gray700">
+        Valor:
+      </Text>
+      <Input bg="$gray100">
+        <InputField
+          placeholder="R$ 0,00"
+          keyboardType="numeric"
+          value={valor}
+          onChangeText={setValor}
+          placeholderTextColor="$gray400"
+        />
+      </Input>
+      {/* Campo de seleção de categoria usando Picker nativo */}
+      <Text fontSize="$sm" color="$gray700">
+        Categoria:
+      </Text>
+      <Box
+        // envolvemos o Picker num Box para poder estilizar fundo/padding
+        bg="$gray100"
+        borderRadius="$sm"
+        overflow="hidden"
       >
-        <VStack space="sm">
-          {/* Campo para inserir o valor do gasto */}
-          <Text fontSize="$sm" color="$gray700">
-            Valor:
-          </Text>
-          <Input bg="$gray100">
+        <Picker
+          selectedValue={categoria}
+          onValueChange={(itemValue) => setCategoria(itemValue)}
+        >
+          <Picker.Item label="Selecione a categoria" value="" />
+          {[...categorias, ...categoriasCustom].map((cat) => (
+            <Picker.Item
+              key={cat}
+              label={cat}
+              value={cat.toLowerCase()}
+            />
+          ))}
+        </Picker>
+      </Box>
+      {/* Botão para adicionar nova categoria */}
+      {!adicionandoCategoria ? (
+        <Button mt="$2" bg="$orange500" onPress={() => setAdicionandoCategoria(true)}>
+          <Text color="$white">Adicionar nova categoria</Text>
+        </Button>
+      ) : (
+        <HStack space="sm" mt="$2" alignItems="center">
+          <Input flex={2} bg="$gray100">
             <InputField
-              placeholder="R$ 0,00"
-              keyboardType="numeric"
-              value={valor}
-              onChangeText={setValor}
-              placeholderTextColor="$gray400"
+              placeholder="Nova categoria"
+              value={novaCategoria}
+              onChangeText={setNovaCategoria}
             />
           </Input>
-
-          {/* Campo de seleção de categoria usando Picker nativo */}
-          <Text fontSize="$sm" color="$gray700">
-            Categoria:
+          <Button flex={1} bg="$green500" onPress={handleAdicionarCategoria}>
+            <Text color="$white">Salvar</Text>
+          </Button>
+          <Button flex={1} bg="$gray400" onPress={() => { setAdicionandoCategoria(false); setNovaCategoria(""); }}>
+            <Text color="$white">Cancelar</Text>
+          </Button>
+        </HStack>
+      )}
+      {/* Campo para selecionar tipo de gasto */}
+      <Text fontSize="$sm" color="$gray700" mt="$2">
+        Tipo de gasto:
+      </Text>
+      <HStack space="md" mb="$2">
+        <Button
+          flex={1}
+          bg={tipo === 'fixo' ? "$orange500" : "$gray200"}
+          onPress={() => setTipo('fixo')}
+        >
+          <Text color={tipo === 'fixo' ? "$white" : "$gray900"}>Fixo</Text>
+        </Button>
+        <Button
+          flex={1}
+          bg={tipo === 'variavel' ? "$orange500" : "$gray200"}
+          onPress={() => setTipo('variavel')}
+        >
+          <Text color={tipo === 'variavel' ? "$white" : "$gray900"}>Variável</Text>
+        </Button>
+      </HStack>
+      {/* Campo para inserir a data do gasto */}
+      <Text fontSize="$sm" color="$gray700">
+        Data:
+      </Text>
+      <Input bg="$gray100">
+        <InputField
+          placeholder="DD/MM/AAAA"
+          value={data}
+          onChangeText={setData}
+          placeholderTextColor="$gray400"
+        />
+      </Input>
+      {/* Campo para inserir a descrição do gasto */}
+      <Text fontSize="$sm" color="$gray700">
+        Descrição:
+      </Text>
+      <Input bg="$gray100">
+        <InputField
+          placeholder="Descrição"
+          value={descricao}
+          onChangeText={setDescricao}
+          placeholderTextColor="$gray400"
+        />
+      </Input>
+      {/* Botões de ação do formulário */}
+      <HStack space="sm" mt="$4">
+        {/* Botão Salvar - Cor laranja com efeito de pressionar */}
+        <Button
+          flex={1}
+          bg="$orange500"
+          $pressed={{ bg: "$orange600" }}
+          onPress={handleSalvar}
+        >
+          <Text color="$white" fontWeight="bold">
+            Salvar
           </Text>
-          <Box
-            // envolvemos o Picker num Box para poder estilizar fundo/padding
-            bg="$gray100"
-            borderRadius="$sm"
-            overflow="hidden"
-          >
-            <Picker
-              selectedValue={categoria}
-              onValueChange={(itemValue) => setCategoria(itemValue)}
-            >
-              <Picker.Item label="Selecione a categoria" value="" />
-              {[...categorias, ...categoriasCustom].map((cat) => (
-                <Picker.Item
-                  key={cat}
-                  label={cat}
-                  value={cat.toLowerCase()}
-                />
-              ))}
-            </Picker>
-          </Box>
-
-          {/* Botão para adicionar nova categoria */}
-          {!adicionandoCategoria ? (
-            <Button mt="$2" bg="$orange500" onPress={() => setAdicionandoCategoria(true)}>
-              <Text color="$white">Adicionar nova categoria</Text>
-            </Button>
-          ) : (
-            <HStack space="sm" mt="$2" alignItems="center">
-              <Input flex={2} bg="$gray100">
-                <InputField
-                  placeholder="Nova categoria"
-                  value={novaCategoria}
-                  onChangeText={setNovaCategoria}
-                />
-              </Input>
-              <Button flex={1} bg="$green500" onPress={handleAdicionarCategoria}>
-                <Text color="$white">Salvar</Text>
-              </Button>
-              <Button flex={1} bg="$gray400" onPress={() => { setAdicionandoCategoria(false); setNovaCategoria(""); }}>
-                <Text color="$white">Cancelar</Text>
-              </Button>
-            </HStack>
-          )}
-
-          {/* Campo para selecionar tipo de gasto */}
-          <Text fontSize="$sm" color="$gray700" mt="$2">
-            Tipo de gasto:
+        </Button>
+        {/* Botão Cancelar - Cor cinza com efeito de pressionar */}
+        <Button
+          flex={1}
+          bg="$gray400"
+          $pressed={{ bg: "$gray500" }}
+          onPress={handleCancelar}
+        >
+          <Text color="$white" fontWeight="bold">
+            Cancelar
           </Text>
-          <HStack space="md" mb="$2">
-            <Button
-              flex={1}
-              bg={tipo === 'fixo' ? "$orange500" : "$gray200"}
-              onPress={() => setTipo('fixo')}
-            >
-              <Text color={tipo === 'fixo' ? "$white" : "$gray900"}>Fixo</Text>
-            </Button>
-            <Button
-              flex={1}
-              bg={tipo === 'variavel' ? "$orange500" : "$gray200"}
-              onPress={() => setTipo('variavel')}
-            >
-              <Text color={tipo === 'variavel' ? "$white" : "$gray900"}>Variável</Text>
-            </Button>
-          </HStack>
-
-          {/* Campo para inserir a data do gasto */}
-          <Text fontSize="$sm" color="$gray700">
-            Data:
-          </Text>
-          <Input bg="$gray100">
-            <InputField
-              placeholder="DD/MM/AAAA"
-              value={data}
-              onChangeText={setData}
-              placeholderTextColor="$gray400"
-            />
-          </Input>
-
-          {/* Campo para inserir a descrição do gasto */}
-          <Text fontSize="$sm" color="$gray700">
-            Descrição:
-          </Text>
-          <Input bg="$gray100">
-            <InputField
-              placeholder="Descrição"
-              value={descricao}
-              onChangeText={setDescricao}
-              placeholderTextColor="$gray400"
-            />
-          </Input>
-
-          {/* Botões de ação do formulário */}
-          <HStack space="sm" mt="$4">
-            {/* Botão Salvar - Cor laranja com efeito de pressionar */}
-            <Button
-              flex={1}
-              bg="$orange500"
-              $pressed={{ bg: "$orange600" }}
-              onPress={handleSalvar}
-            >
-              <Text color="$white" fontWeight="bold">
-                Salvar
-              </Text>
-            </Button>
-
-            {/* Botão Cancelar - Cor cinza com efeito de pressionar */}
-            <Button
-              flex={1}
-              bg="$gray400"
-              $pressed={{ bg: "$gray500" }}
-              onPress={handleCancelar}
-            >
-              <Text color="$white" fontWeight="bold">
-                Cancelar
-              </Text>
-            </Button>
-          </HStack>
-        </VStack>
-      </ScrollView>
-    </KeyboardAvoidingView>
+        </Button>
+      </HStack>
+    </VStack>
   );
 }

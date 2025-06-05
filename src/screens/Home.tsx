@@ -10,7 +10,7 @@ import {
   ScrollView,
   Pressable,
 } from "@gluestack-ui/themed";
-import { Dimensions } from "react-native";
+import { Dimensions, KeyboardAvoidingView, Platform, StyleSheet } from "react-native";
 import { ResumoDoMes } from "../components/ResumoDoMes";
 import { UltimosGastos } from "../components/UltimosGastos";
 import { AdicionarGastoForm } from "../components/AdicionarGastoForm"; // Novo componente
@@ -36,11 +36,15 @@ export function Home() {
 
   // Renderização da tela
   return (
-    <Center flex={1} bg="$gray100">
+    <KeyboardAvoidingView
+      style={styles.keyboardAvoidingView}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
+    >
       <ScrollView
-        w="100%"
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 32 }}
+        contentContainerStyle={styles.scrollViewContentContainer}
+        keyboardShouldPersistTaps="handled"
       >
         {/* Header com logo e saldo */}
         <Box
@@ -98,7 +102,6 @@ export function Home() {
             </HStack>
           </VStack>
         </Box>
-
         {/* Resumo do mês */}
         <Box
           w="90%"
@@ -110,10 +113,8 @@ export function Home() {
         >
           <ResumoDoMes />
         </Box>
-
         {/* Últimos Gastos */}
         <UltimosGastos despesas={despesas} />
-
         {/* Formulário de Adicionar Gasto */}
         <Box
           w="90%"
@@ -151,6 +152,24 @@ export function Home() {
           />
         </Box>
       </ScrollView>
-    </Center>
+    </KeyboardAvoidingView>
   );
 }
+
+const styles = StyleSheet.create({
+  keyboardAvoidingView: {
+    flex: 1,
+  },
+  scrollViewContentContainer: {
+    flexGrow: 1,
+    paddingBottom: 80,
+    backgroundColor: '#f5f5f5',
+  },
+  // You can move other inline styles here if needed, for example:
+  // logoImage: {
+  //   width: 80,
+  //   height: 80,
+  //   resizeMode: "contain",
+  //   marginRight: "80%", 
+  // }
+});
