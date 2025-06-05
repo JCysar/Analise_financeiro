@@ -1,3 +1,4 @@
+// Tela de Gastos: exibe o histórico de despesas do usuário
 import React from "react";
 import {
   Center,
@@ -9,16 +10,21 @@ import {
 } from "@gluestack-ui/themed";
 import { useDespesas } from "../context/ExpensesContext"; // Importando o contexto de despesas
 
+// Componente principal da tela de gastos
 export function History() {
+  // Hook do contexto para acessar as despesas
   const { despesas } = useDespesas();
 
+  // Renderização da tela
   return (
     <Center flex={1} bg="$gray100">
       <ScrollView w="100%">
-        <VStack space="$4" p="$4">
+        <VStack space="md" p="$4">
+          {/* Título da tela */}
           <Text fontSize="$xl" fontWeight="bold" color="$gray900" mb="$2">
             Gastos
           </Text>
+          {/* Lista de despesas */}
           {despesas.map((d) => (
             <Box
               key={d.id}

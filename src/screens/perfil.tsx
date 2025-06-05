@@ -1,3 +1,4 @@
+// Tela de Perfil: permite ao usuário visualizar e editar seus dados pessoais e renda
 import React, { useState } from "react";
 import {
   Center,
@@ -12,32 +13,35 @@ import {
 import { useDespesas } from "../context/ExpensesContext";
 import { Alert } from "react-native"; // Adicione esta linha
 
+// Componente principal da tela de perfil
 export function Exercise() {
-  // Aqui, de forma estática, estamos “simulando” os dados já existentes do usuário.
-  // Em um app real, você buscaria isso de uma API ou do estado global.
+  // Dados simulados do usuário (em um app real, viriam de uma API ou contexto)
   const existingUser = {
     name: "Vinicius Lourenço",
     email: "vinicius.lourenco@example.com",
     phone: "(11) 99999-1234",
   };
 
+  // Estados para os campos do formulário
   const [name, setName] = useState(existingUser.name);
   const [email, setEmail] = useState(existingUser.email);
   const [phone, setPhone] = useState(existingUser.phone);
   const [income, setIncome] = useState("");
 
+  // Função do contexto para atualizar a renda
   const { setRenda } = useDespesas();
 
+  // Renderização da tela
   return (
     <Center flex={1} bg="$gray100">
       <ScrollView w="100%">
         <VStack space="lg" p="$4">
-          {/*** Cabeçalho “Perfil” ***/}
+          {/* Cabeçalho */}
           <Text fontSize="$2xl" fontWeight="bold" color="$gray900" mb="$2">
             Meu Perfil
           </Text>
 
-          {/*** Card de informações do usuário ***/}
+          {/* Card de informações do usuário */}
           <Box
             bg="$white"
             borderRadius="$lg"
@@ -45,7 +49,7 @@ export function Exercise() {
             borderColor="$blue500"
             p="$4"
           >
-            {/** Nome **/}
+            {/* Campo Nome */}
             <Text fontSize="$sm" color="$gray700" mb="$1">
               Nome
             </Text>
@@ -59,7 +63,7 @@ export function Exercise() {
 
             <Box h="$3" />
 
-            {/** E-mail **/}
+            {/* Campo E-mail */}
             <Text fontSize="$sm" color="$gray700" mb="$1">
               E-mail
             </Text>
@@ -72,7 +76,7 @@ export function Exercise() {
               />
             </Input>
 
-            {/** Telefone **/}
+            {/* Campo Telefone */}
             <Text fontSize="$sm" color="$gray700" mb="$1">
               Telefone
             </Text>
@@ -85,7 +89,7 @@ export function Exercise() {
               />
             </Input>
 
-            {/** Renda **/}
+            {/* Campo Renda */}
             <Text fontSize="$sm" color="$gray700" mb="$1">
               Renda
             </Text>
@@ -100,14 +104,13 @@ export function Exercise() {
 
             <Box h="$4" />
 
-            {/*** Ações ***/}
+            {/* Botão para salvar alterações */}
             <Button
               onPress={() => {
                 setRenda(Number(income) || 0);
-              
                 Alert.alert("Sucesso", "Dados atualizados com sucesso!");
               }}
-              bg="$orange500" // altere para a cor laranja desejada
+              bg="$orange500"
               borderRadius="$md"
               p="$3"
             >

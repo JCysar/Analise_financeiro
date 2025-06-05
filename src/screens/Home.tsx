@@ -19,21 +19,22 @@ import { Image } from "react-native";
 import { useDespesas } from "../context/ExpensesContext"; // já está importado
 import { Alert } from "react-native";
 
+// Tela Home: painel principal do app, mostra saldo, resumo do mês, últimos gastos e formulário para adicionar gasto
 export function Home() {
+  // Hook do contexto para acessar despesas, função de adicionar e renda
   const { despesas, adicionarDespesa, renda } = useDespesas();
 
-  // Remova o estado local de despesas
-  // const [despesasState, setDespesas] = useState([...]);
-
-  // Lista de categorias fixas
+  // Lista de categorias fixas para o formulário
   const categorias = ["Mercado", "Lazer", "Transporte"];
 
-  // Calcule os totais usando o contexto
+  // Calcula o total de gastos e saldo disponível
   const gastosTotais = despesas.reduce((sum, d) => sum + (d.valor || 0), 0);
   const saldo = (renda || 0) - gastosTotais;
 
+  // Estado para mostrar ou ocultar o saldo
   const [saldoVisivel, setSaldoVisivel] = useState(true);
 
+  // Renderização da tela
   return (
     <Center flex={1} bg="$gray100">
       <ScrollView
@@ -41,7 +42,7 @@ export function Home() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 32 }}
       >
-        {/* Header */}
+        {/* Header com logo e saldo */}
         <Box
           w="100%"
           px="$4"
@@ -52,6 +53,7 @@ export function Home() {
           mt="$10"
         >
           <HStack justifyContent="flex-end" alignItems="center">
+            {/* Logo do app */}
             <Image
               source={require("../assets/logotko.png")}
               style={{
@@ -64,21 +66,23 @@ export function Home() {
           </HStack>
           <VStack mt="$4" space="sm">
             <HStack alignItems="center" space="sm">
+              {/* Saldo do usuário, pode ser ocultado */}
               <Text fontSize="$2xl" fontWeight="bold" color="$black">
-                Saldo:{" "}
-                {saldoVisivel
+                Saldo: {saldoVisivel
                   ? `R$ ${saldo.toLocaleString("pt-BR", {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
                     })}`
                   : "••••••"}
               </Text>
+              {/* Botão para alternar visibilidade do saldo */}
               <ToggleSaldoButton
                 visivel={saldoVisivel}
                 onToggle={() => setSaldoVisivel((v) => !v)}
               />
             </HStack>
             <HStack alignItems="center" space="md">
+              {/* Renda e gastos totais */}
               <HStack alignItems="center" space="xs">
                 <Text fontSize="$md">💰</Text>
                 <Text fontSize="$sm" color="$gray600">
