@@ -1,4 +1,7 @@
-import { VStack, Image, Center, Text, Heading, ScrollView } from "@gluestack-ui/themed";
+import { VStack, Image, Center, Text, Heading, ScrollView, Link, LinkText, HStack } from "@gluestack-ui/themed";
+import { KeyboardAvoidingView, Platform } from 'react-native';
+import { useNavigation } from "@react-navigation/native";
+import { AuthNavigatorRoutesProps } from "@routes/auth.routes"; // Assuming you'll use this for typed navigation
 
 /* o typescript nao tava entendendo o ".png" entao tive que criar um arquivo types para isso */
 
@@ -12,119 +15,108 @@ import backgrtoundImg from "@assets/background.png";
 
 /* agora conseguimos passar a logo */
 
-
-
-import { useNavigation } from "@react-navigation/native";
-
-
-
-
-
-
 import Logo from "@assets/logotko.png";
-
-
 
 /* tempos que importar os componentes  de input */
 
-
-
 import { Input } from "@components/input";
-
 
 /* importando o butao */
 
 import { Button } from "@components/Button";
 
-
-
-
-
-
-
-
 export function SignUp() {
+    const navigation = useNavigation<AuthNavigatorRoutesProps>(); // Use typed navigation
 
-    const navigation = useNavigation();
-
-    function handelGoback() {
-        navigation.goBack();
-    }   
+    function handleGoBackToLogin() {
+        navigation.navigate("Signin"); // Navigate to Signin screen
+    }
 
     return (
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false} bg="$white">
+            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+                <VStack flex={1} px="$10" justifyContent="center" pb="$10">
 
-        <ScrollView contentContainerStyle={{ flexGrow: 1, backgroundColor: '#FFF' }} showsVerticalScrollIndicator={false}>
-
-
-            <VStack flex={1}>
-
-                <Image
-                    w="$full"
-                    h={624}
-                    source={backgrtoundImg}
-                    defaultSource={backgrtoundImg}
-                    alt="Pesssoas treinando"
-                    position="absolute"
-
-
-
-
-
-
-                />
-
-                <VStack flex={1} px="$10" pb="$16" bg="#FFF">
-
-
-                    <Center my="$24">
-
-                        <Image source={Logo} alt="Logo" />
-
-                        <Text color="#888" fontSize="$sm">
-
-                          
-
-
+                    <Center my="$12"> 
+                        <Heading color="$textDark800" fontSize="$2xl" mb="$2">
+                            Crie a sua conta!
+                        </Heading>
+                        <Text color="$textLight700" fontSize="$md">
+                            vamos criar sua conta juntos
                         </Text>
-
                     </Center>
 
-                    <Center gap="$2" flex={1}>
-                        <Heading color="#222" > Crie sua conta  </Heading>
+                    <VStack space="md">
+                        <VStack space="xs">
+                            <Text color="$textLight800" fontWeight="$bold">Nome*</Text>
+                            <Input
+                                placeholder="Seu nome completo"
+                                autoCapitalize="words"
+                                placeholderTextColor="$coolGray400"
+                                rounded="$lg"
+                            />
+                        </VStack>
 
-                        <Input placeholder="Nome" style={{ backgroundColor: '#FFF', borderColor: '#DDD' }} placeholderTextColor="#888" />
+                        <VStack space="xs">
+                            <Text color="$textLight800" fontWeight="$bold">E-mail*</Text>
+                            <Input
+                                placeholder="Seu e-mail"
+                                keyboardType="email-address"
+                                autoCapitalize="none"
+                                placeholderTextColor="$coolGray400"
+                                rounded="$lg"
+                            />
+                        </VStack>
 
+                        <VStack space="xs">
+                            <Text color="$textLight800" fontWeight="$bold">Senha*</Text>
+                            <Input
+                                placeholder="Crie uma senha"
+                                secureTextEntry
+                                autoCapitalize="none"
+                                placeholderTextColor="$coolGray400"
+                                rounded="$lg"
+                            />
+                        </VStack>
 
+                        <VStack space="xs">
+                            <Text color="$textLight800" fontWeight="$bold">Confirmar senha*</Text>
+                            <Input
+                                placeholder="Confirme sua senha"
+                                secureTextEntry
+                                autoCapitalize="none"
+                                placeholderTextColor="$coolGray400"
+                                rounded="$lg"
+                            />
+                        </VStack>
+                    </VStack>
 
-                        <Input placeholder="Email" keyboardType="email-address" autoCapitalize="none" style={{ backgroundColor: '#FFF', borderColor: '#DDD' }} placeholderTextColor="#888" />
+                    <Button
+                        title="Cadastrar"
+                        mt="$10"
+                        mb="$6"
+                        bg="#FF9100" 
+                        sx={{
+                            ":pressed": {
+                                bg: "$orange700"
+                            }
+                        }}
+                        rounded="$lg"
+                    />
 
-                        <Input placeholder="Senha" secureTextEntry autoCapitalize="none" style={{ backgroundColor: '#FFF', borderColor: '#DDD' }} placeholderTextColor="#888" />
-
-                        {/* colocar o "isLoading" abaixo  para ficar carregando quando user fazer a requisicao ao banco */}
-
-                        <Button title="Criar e Acessar" mt="$2" style={{ backgroundColor: '#FF9100', shadowColor: '#FF9100', shadowOpacity: 0.2, shadowRadius: 8, shadowOffset: { width: 0, height: 4 } }} variant="solid" />
-
+                    <Center>
+                        <HStack>
+                            <Text color="$textLight700" fontSize="$sm" fontFamily="$body">Já possui uma conta? </Text>
+                            <Link onPress={handleGoBackToLogin}>
+                                <LinkText color="#FF9100" fontSize="$sm" fontFamily="$body" fontWeight="$bold" textDecorationLine="underline">
+                                    Faça login
+                                </LinkText>
+                            </Link>
+                        </HStack>
                     </Center>
-
-
-
-
-
-
-                    <Button title="Voltar para login" variant="outline" mt="$12" onPress={handelGoback} style={{ borderColor: '#FF9100' }}/>
-
-
-
-
-
-
-
-
 
                 </VStack>
-
-
-            </VStack>
+            </KeyboardAvoidingView>
         </ScrollView>
-    )
+    );
 }
