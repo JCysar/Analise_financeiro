@@ -4,11 +4,11 @@
     "slug": "PennyPilot",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./src/assets/penny_pilot_logo_no_bg.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./src/assets/penny_pilot_logo_no_bg.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,7 +17,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./src/assets/penny_pilot_logo_no_bg.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true

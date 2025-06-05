@@ -3,7 +3,6 @@ import { KeyboardAvoidingView, Platform } from 'react-native';
 
 /* o typescript nao tava entendendo o ".png" entao tive que criar um arquivo types para isso */
 
-import backgrtoundImg from "@assets/background.png";
 import logotkoImg from "@assets/logotko.png";
 
 /* como a logo tava em svg tivemos que baixar umas dependecias o metro.config.js */
