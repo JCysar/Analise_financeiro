@@ -14,7 +14,7 @@ import {
 } from "@gluestack-ui/themed";
 import { User as UserIcon, Camera as CameraIcon } from "lucide-react-native";
 import { useDespesas } from "../context/ExpensesContext";
-import { Alert, Platform } from "react-native";
+import { Alert, Platform, KeyboardAvoidingView, StyleSheet } from "react-native";
 import { Input } from "@components/input";
 import * as ImagePicker from 'expo-image-picker';
 
@@ -57,125 +57,148 @@ export function Perfil() {
   };
 
   return (
-    <ScrollView flex={1} bg="$gray100" showsVerticalScrollIndicator={false}>
-      <VStack space="lg" p="$6" pt="$12">
-        
-        <Center>
-          <Pressable
-            onPress={handleSelectImage}
-            w={120}
-            h={120}
-            rounded="$full"
-            bg="$coolGray300"
-            justifyContent="center"
-            alignItems="center"
-            mb="$4"
-            sx={{ _dark: { bg: "$coolGray700" } }}
-          >
-            {profileImageUri ? (
-              <Image
-                source={{ uri: profileImageUri }}
-                alt="Foto de perfil"
-                w={120}
-                h={120}
-                rounded="$full"
-              />
-            ) : (
-              <Icon as={UserIcon} size="xl" color="$coolGray500" />
-            )}
-            <Box
-              position="absolute"
-              bottom={0}
-              right={0}
-              bg="$primary500"
-              rounded="$full"
-              p="$1.5"
-            >
-              <Icon as={CameraIcon} size="sm" color="$white" />
-            </Box>
-          </Pressable>
-          <Heading size="xl" color="$textDark800" mb="$1">
-            Meu Perfil
-          </Heading>
-          <Text color="$textLight600" fontSize="$md" mb="$6">Edite seus dados e gerencie sua renda.</Text>
-        </Center>
-
-        {/* Card de informações do usuário */}
-        <Box
-          bg="$white"
-          rounded="$xl"
-          p="$6"
-          shadow="md"
-          sx={{ _dark: { bg: "$coolGray800" } }}
-        >
-          {/* Campo Nome */}
-          <Text color="$textLight800" fontWeight="$bold" mb="$1">Nome Completo*</Text>
-          <Input
-            value={name}
-            onChangeText={setName}
-            placeholder="Seu nome completo"
-            rounded="$lg"
-          />
-
-          <Box h="$4" />
-
-          {/* Campo E-mail */}
-          <Text color="$textLight800" fontWeight="$bold" mb="$1">E-mail*</Text>
-          <Input
-            value={email}
-            onChangeText={setEmail}
-            placeholder="Seu e-mail"
-            keyboardType="email-address"
-            rounded="$lg"
-          />
+    <KeyboardAvoidingView
+      style={styles.keyboardAvoidingView}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
+    >
+      <ScrollView
+        flex={1}
+        bg="$gray100"
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollViewContentContainer}
+        keyboardShouldPersistTaps="handled"
+      >
+        <VStack space="lg" p="$6" pt="$12">
           
-          <Box h="$4" />
+          <Center>
+            <Pressable
+              onPress={handleSelectImage}
+              w={120}
+              h={120}
+              rounded="$full"
+              bg="$coolGray300"
+              justifyContent="center"
+              alignItems="center"
+              mb="$4"
+              sx={{ _dark: { bg: "$coolGray700" } }}
+            >
+              {profileImageUri ? (
+                <Image
+                  source={{ uri: profileImageUri }}
+                  alt="Foto de perfil"
+                  w={120}
+                  h={120}
+                  rounded="$full"
+                />
+              ) : (
+                <Icon as={UserIcon} size="xl" color="$coolGray500" />
+              )}
+              <Box
+                position="absolute"
+                bottom={0}
+                right={0}
+                bg="$primary500"
+                rounded="$full"
+                p="$1.5"
+              >
+                <Icon as={CameraIcon} size="sm" color="$white" />
+              </Box>
+            </Pressable>
+            <Heading size="xl" color="$textDark800" mb="$1">
+              Meu Perfil
+            </Heading>
+            <Text color="$textLight600" fontSize="$md" mb="$6">Edite seus dados e gerencie sua renda.</Text>
+          </Center>
 
-          {/* Campo Telefone */}
-          <Text color="$textLight800" fontWeight="$bold" mb="$1">Telefone</Text>
-          <Input
-            value={phone}
-            onChangeText={setPhone}
-            placeholder="(xx) xxxxx-xxxx"
-            keyboardType="phone-pad"
-            rounded="$lg"
-          />
-
-          <Box h="$4" />
-
-          {/* Campo Renda */}
-          <Text color="$textLight800" fontWeight="$bold" mb="$1">Renda Mensal (R$)</Text>
-          <Input
-            value={income}
-            onChangeText={setIncome}
-            placeholder="Ex: 3500.00"
-            keyboardType="numeric"
-            rounded="$lg"
-          />
-
-          <Box h="$6" />
-
-          {/* Botão para salvar alterações */}
-          <Button
-            onPress={() => {
-              setRenda(Number(income) || 0);
-              Alert.alert("Sucesso", "Dados atualizados com sucesso!");
-            }}
-            bg="#FF9100"
-            rounded="$lg"
-            size="lg"
-            sx={{
-                ":pressed": {
-                    bg: "$orange700"
-                }
-            }}
+          {/* Card de informações do usuário */}
+          <Box
+            bg="$white"
+            rounded="$xl"
+            p="$6"
+            shadow="md"
+            sx={{ _dark: { bg: "$coolGray800" } }}
           >
-            <Text color="$white" fontWeight="$bold">
-              Salvar Alterações
-            </Text>
-          </Button>
-        </Box>
-      </VStack>
-    </ScrollView>
+            {/* Campo Nome */}
+            <Text color="$textLight800" fontWeight="$bold" mb="$1">Nome Completo*</Text>
+            <Input
+              value={name}
+              onChangeText={setName}
+              placeholder="Seu nome completo"
+              rounded="$lg"
+            />
+
+            <Box h="$4" />
+
+            {/* Campo E-mail */}
+            <Text color="$textLight800" fontWeight="$bold" mb="$1">E-mail*</Text>
+            <Input
+              value={email}
+              onChangeText={setEmail}
+              placeholder="Seu e-mail"
+              keyboardType="email-address"
+              rounded="$lg"
+            />
+            
+            <Box h="$4" />
+
+            {/* Campo Telefone */}
+            <Text color="$textLight800" fontWeight="$bold" mb="$1">Telefone</Text>
+            <Input
+              value={phone}
+              onChangeText={setPhone}
+              placeholder="(xx) xxxxx-xxxx"
+              keyboardType="phone-pad"
+              rounded="$lg"
+            />
+
+            <Box h="$4" />
+
+            {/* Campo Renda */}
+            <Text color="$textLight800" fontWeight="$bold" mb="$1">Renda Mensal (R$)</Text>
+            <Input
+              value={income}
+              onChangeText={setIncome}
+              placeholder="Ex: 3500.00"
+              keyboardType="numeric"
+              rounded="$lg"
+            />
+
+            <Box h="$6" />
+
+            {/* Botão para salvar alterações */}
+            <Button
+              onPress={() => {
+                setRenda(Number(income) || 0);
+                Alert.alert("Sucesso", "Dados atualizados com sucesso!");
+              }}
+              bg="#FF9100"
+              rounded="$lg"
+              size="lg"
+              sx={{
+                  ":pressed": {
+                      bg: "$orange700"
+                  }
+              }}
+            >
+              <Text color="$white" fontWeight="$bold">
+                Salvar Alterações
+              </Text>
+            </Button>
+          </Box>
+        </VStack>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
+
+const styles = StyleSheet.create({
+  keyboardAvoidingView: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+  },
+  scrollViewContentContainer: {
+    flexGrow: 1,
+    paddingBottom: 80,
+  },
+});
