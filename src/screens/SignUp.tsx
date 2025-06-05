@@ -1,11 +1,9 @@
-import { VStack, Image, Center, Text, Heading, ScrollView, Link, LinkText, HStack } from "@gluestack-ui/themed";
+import { VStack, Center, Text, Heading, ScrollView, Link, LinkText, HStack } from "@gluestack-ui/themed";
 import { KeyboardAvoidingView, Platform } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
-import { AuthNavigatorRoutesProps } from "@routes/auth.routes"; // Assuming you'll use this for typed navigation
+import { AuthNavigatorRoutesProps } from "@routes/auth.routes";
 
 /* o typescript nao tava entendendo o ".png" entao tive que criar um arquivo types para isso */
-
-import backgrtoundImg from "@assets/background.png";
 
 /* como a logo tava em svg tivemos que baixar umas dependecias o metro.config.js */
 
@@ -26,16 +24,25 @@ import { Input } from "@components/input";
 import { Button } from "@components/Button";
 
 export function SignUp() {
-    const navigation = useNavigation<AuthNavigatorRoutesProps>(); // Use typed navigation
+    const navigation = useNavigation<AuthNavigatorRoutesProps>();
 
     function handleGoBackToLogin() {
-        navigation.navigate("Signin"); // Navigate to Signin screen
+        navigation.navigate("Signin");
     }
 
     return (
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false} bg="$white">
-            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
-                <VStack flex={1} px="$10" justifyContent="center" pb="$10">
+        <KeyboardAvoidingView 
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 
+            style={{ flex: 1, backgroundColor: 'white' }}
+        >
+            <ScrollView 
+                contentContainerStyle={{ 
+                    flexGrow: 1, 
+                    justifyContent: 'center'
+                }} 
+                showsVerticalScrollIndicator={false}
+            >
+                <VStack px="$10" pb="$10" w="$full">
 
                     <Center my="$12"> 
                         <Heading color="$textDark800" fontSize="$2xl" mb="$2">
@@ -116,7 +123,7 @@ export function SignUp() {
                     </Center>
 
                 </VStack>
-            </KeyboardAvoidingView>
-        </ScrollView>
+            </ScrollView>
+        </KeyboardAvoidingView>
     );
 }
