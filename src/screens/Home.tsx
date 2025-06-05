@@ -129,8 +129,8 @@ export function Home() {
           </Text>
           <AdicionarGastoForm
             categorias={categorias}
-            onSalvar={({ valor, categoria, data, descricao }) => {
-              if (!valor || !categoria || !data || !descricao) return;
+            onSalvar={({ valor, categoria, data, descricao, tipo }) => {
+              if (!valor || !categoria || !data || !descricao || !tipo) return;
               const novaDespesa = {
                 id: Date.now(),
                 nome: categoria.charAt(0).toUpperCase() + categoria.slice(1),
@@ -143,6 +143,7 @@ export function Home() {
                     ? "🎉"
                     : "🚗",
                 descricao,
+                tipo,
               };
               adicionarDespesa(novaDespesa); // Use o contexto!
               Alert.alert("Sucesso", "Gasto adicionado com sucesso!");

@@ -8,6 +8,7 @@ interface Despesa {
   data: string; // Data da despesa
   icone: string; // Ícone associado à despesa
   descricao: string; // Descrição detalhada da despesa
+  tipo: 'fixo' | 'variavel'; // Tipo da despesa
 }
 
 // Interface que define o formato do contexto das despesas
