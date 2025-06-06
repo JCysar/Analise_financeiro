@@ -32,7 +32,7 @@ export function Routes() {
       
 
        <AppRoutes /> 
-    {/* <AuthRoutes/>  */}
+   {/* <AuthRoutes/>  */}
 
 
     </NavigationContainer>

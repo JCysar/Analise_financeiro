@@ -1,8 +1,11 @@
-import { VStack, Image, Center, Text, Heading, ScrollView } from "@gluestack-ui/themed";
+import { VStack, Center, Text, Heading, ScrollView, Link, LinkText, HStack, Box } from "@gluestack-ui/themed";
+import { KeyboardAvoidingView, Platform } from 'react-native';
+import { useNavigation } from "@react-navigation/native";
+import { AuthNavigatorRoutesProps } from "@routes/auth.routes";
+import { Button } from "@components/Button";
+import { useState } from 'react';
 
 /* o typescript nao tava entendendo o ".png" entao tive que criar um arquivo types para isso */
-
-import backgrtoundImg from "@assets/background.png";
 
 /* como a logo tava em svg tivemos que baixar umas dependecias o metro.config.js */
 
@@ -12,119 +15,180 @@ import backgrtoundImg from "@assets/background.png";
 
 /* agora conseguimos passar a logo */
 
-
-
-import { useNavigation } from "@react-navigation/native";
-
-
-
-
-
-
 import Logo from "@assets/logotko.png";
-
-
 
 /* tempos que importar os componentes  de input */
 
-
-
 import { Input } from "@components/input";
 
-
-/* importando o butao */
-
-import { Button } from "@components/Button";
-
-
-
-
-
-
-
-
 export function SignUp() {
+    const navigation = useNavigation<AuthNavigatorRoutesProps>();
 
-    const navigation = useNavigation();
+    // State for input fields
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    // Optional: state for loading and error handling
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    function handelGoback() {
-        navigation.goBack();
-    }   
+    function handleGoBackToLogin() {
+        navigation.navigate("Signin");
+    }
+
+    // Form submission handler
+    async function handleSignUp() {
+        setIsLoading(true);
+        setError(null);
+
+        // Basic validation
+        if (!name || !email || !password || !confirmPassword) {
+            setError("Por favor, preencha todos os campos.");
+            setIsLoading(false);
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            setError("As senhas não coincidem.");
+            setIsLoading(false);
+            return;
+        }
+
+        // TODO: API call logic will go here
+        console.log("Form Data:", { name, email, password });
+        // Simulating API call
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // Example:
+        // try {
+        //   const response = await api.post('/register', { name, email, password });
+        //   // Handle successful registration (e.g., navigate to login or home)
+        //   console.log("Registration successful:", response.data);
+        //   navigation.navigate("Signin"); // Or directly to home if auto-login
+        // } catch (err) {
+        //   setError("Falha no cadastro. Tente novamente.");
+        //   console.error("Registration error:", err);
+        // } finally {
+        //   setIsLoading(false);
+        // }
+
+        setIsLoading(false); // Remove this if API call handles it
+        // For now, let's keep it simple and log, then navigate back
+        // handleGoBackToLogin(); // Optionally navigate after simulated sign-up
+    }
 
     return (
+        <KeyboardAvoidingView 
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 
+            style={{ flex: 1, backgroundColor: 'white' }}
+        >
+            <ScrollView 
+                contentContainerStyle={{ 
+                    flexGrow: 1, 
+                    justifyContent: 'center'
+                }} 
+                showsVerticalScrollIndicator={false}
+            >
+                <VStack px="$10" pb="$10" w="$full">
 
-        <ScrollView contentContainerStyle={{ flexGrow: 1, backgroundColor: '#FFF' }} showsVerticalScrollIndicator={false}>
-
-
-            <VStack flex={1}>
-
-                <Image
-                    w="$full"
-                    h={624}
-                    source={backgrtoundImg}
-                    defaultSource={backgrtoundImg}
-                    alt="Pesssoas treinando"
-                    position="absolute"
-
-
-
-
-
-
-                />
-
-                <VStack flex={1} px="$10" pb="$16" bg="#FFF">
-
-
-                    <Center my="$24">
-
-                        <Image source={Logo} alt="Logo" />
-
-                        <Text color="#888" fontSize="$sm">
-
-                          
-
-
+                    <Center my="$12"> 
+                        <Heading color="$textDark800" fontSize="$2xl" mb="$2">
+                            Crie a sua conta!
+                        </Heading>
+                        <Text color="$textLight700" fontSize="$md">
+                            vamos criar sua conta juntos
                         </Text>
-
                     </Center>
 
-                    <Center gap="$2" flex={1}>
-                        <Heading color="#222" > Crie sua conta  </Heading>
+                    {/* Display error message if any */}
+                    {error && (
+                        <Box mb="$4" p="$2" rounded="$sm" bg="$red100">
+                            <Text color="$red700" textAlign="center">{error}</Text>
+                        </Box>
+                    )}
 
-                        <Input placeholder="Nome" style={{ backgroundColor: '#FFF', borderColor: '#DDD' }} placeholderTextColor="#888" />
+                    <VStack space="md">
+                        <VStack space="xs">
+                            <Text color="$textLight800" fontWeight="$bold">Nome*</Text>
+                            <Input
+                                placeholder="Seu nome completo"
+                                autoCapitalize="words"
+                                placeholderTextColor="$coolGray400"
+                                rounded="$lg"
+                                value={name}
+                                onChangeText={setName}
+                            />
+                        </VStack>
 
+                        <VStack space="xs">
+                            <Text color="$textLight800" fontWeight="$bold">E-mail*</Text>
+                            <Input
+                                placeholder="Seu e-mail"
+                                keyboardType="email-address"
+                                autoCapitalize="none"
+                                placeholderTextColor="$coolGray400"
+                                rounded="$lg"
+                                value={email}
+                                onChangeText={setEmail}
+                            />
+                        </VStack>
 
+                        <VStack space="xs">
+                            <Text color="$textLight800" fontWeight="$bold">Senha*</Text>
+                            <Input
+                                placeholder="Crie uma senha"
+                                secureTextEntry
+                                autoCapitalize="none"
+                                placeholderTextColor="$coolGray400"
+                                rounded="$lg"
+                                value={password}
+                                onChangeText={setPassword}
+                            />
+                        </VStack>
 
-                        <Input placeholder="Email" keyboardType="email-address" autoCapitalize="none" style={{ backgroundColor: '#FFF', borderColor: '#DDD' }} placeholderTextColor="#888" />
+                        <VStack space="xs">
+                            <Text color="$textLight800" fontWeight="$bold">Confirmar senha*</Text>
+                            <Input
+                                placeholder="Confirme sua senha"
+                                secureTextEntry
+                                autoCapitalize="none"
+                                placeholderTextColor="$coolGray400"
+                                rounded="$lg"
+                                value={confirmPassword}
+                                onChangeText={setConfirmPassword}
+                            />
+                        </VStack>
+                    </VStack>
 
-                        <Input placeholder="Senha" secureTextEntry autoCapitalize="none" style={{ backgroundColor: '#FFF', borderColor: '#DDD' }} placeholderTextColor="#888" />
+                    <Button
+                        title="Cadastrar"
+                        mt="$10"
+                        mb="$6"
+                        bg="#FF9100" 
+                        sx={{
+                            ":pressed": {
+                                bg: "$orange700"
+                            }
+                        }}
+                        rounded="$lg"
+                        onPress={handleSignUp}
+                        disabled={isLoading}
+                    />
 
-                        {/* colocar o "isLoading" abaixo  para ficar carregando quando user fazer a requisicao ao banco */}
-
-                        <Button title="Criar e Acessar" mt="$2" style={{ backgroundColor: '#FF9100', shadowColor: '#FF9100', shadowOpacity: 0.2, shadowRadius: 8, shadowOffset: { width: 0, height: 4 } }} variant="solid" />
-
+                    <Center>
+                        <HStack>
+                            <Text color="$textLight700" fontSize="$sm" fontFamily="$body">Já possui uma conta? </Text>
+                            <Link onPress={handleGoBackToLogin}>
+                                <LinkText color="#FF9100" fontSize="$sm" fontFamily="$body" fontWeight="$bold" textDecorationLine="underline">
+                                    Faça login
+                                </LinkText>
+                            </Link>
+                        </HStack>
                     </Center>
-
-
-
-
-
-
-                    <Button title="Voltar para login" variant="outline" mt="$12" onPress={handelGoback} style={{ borderColor: '#FF9100' }}/>
-
-
-
-
-
-
-
-
 
                 </VStack>
-
-
-            </VStack>
-        </ScrollView>
-    )
+            </ScrollView>
+        </KeyboardAvoidingView>
+    );
 }
