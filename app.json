@@ -4,7 +4,7 @@
     "slug": "PennyPilot",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/penny_pilot_logo_no_bg.png",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
@@ -20,12 +20,11 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/penny_pilot_logo_no_bg.png",
         "backgroundColor": "#ffffff"
-      },
-      "edgeToEdgeEnabled": true
+      }
     },
     "web": {
+      "output": "server",
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
